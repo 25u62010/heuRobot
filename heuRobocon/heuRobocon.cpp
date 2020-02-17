@@ -18,6 +18,8 @@
 #include <excelThread.h>
 #include "excelRecordManger.h"
 #include "QRegExp"
+#include <qcursor.h>
+
 heuRobocon::heuRobocon(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -26,6 +28,7 @@ heuRobocon::heuRobocon(QWidget *parent)
 	ui.Kp->setValidator(v);
 	ui.Ki->setValidator(v);
 	ui.Kd->setValidator(v);
+	ui.targetEdit->setValidator(v);
 	QIntValidator *v2 = new QIntValidator(0, 255);
 	ui.ip1->setValidator(v2);
 	ui.ip2->setValidator(v2);
@@ -45,6 +48,17 @@ heuRobocon::heuRobocon(QWidget *parent)
 	m_Timer = new QTimer(this);
 	m_Timer->start(10);
 	qRegisterMetaType<QVector<QString>>("QVector<QString>");
+	ui.pidRecordTable->setColumnWidth(0, 60);
+	ui.pidRecordTable->setColumnWidth(1, 80);
+	ui.pidRecordTable->setColumnWidth(2, 80);
+	ui.pidRecordTable->setColumnWidth(3, 80);
+	ui.pidRecordTable->setColumnWidth(4, 80);
+	int width =900;
+	width -= 380;
+	width /= 3;
+	ui.pidRecordTable->setColumnWidth(4, width + 1);
+	ui.pidRecordTable->setColumnWidth(5, width + 1);
+	ui.pidRecordTable->setColumnWidth(6, width + 1);
 }
 QHostAddress heuRobocon::getHostAddress()
 {
@@ -96,6 +110,7 @@ void heuRobocon::on_IP4_changed()
 }
 void heuRobocon:: on_sendButton_clicked()
 {
+	autoAbjustPIDRceordTable();
 	typedef union{
 		struct{
 			HEURC_dataFormat::dataInfoDef dataInfo;
@@ -112,7 +127,8 @@ void heuRobocon:: on_sendButton_clicked()
 	
 	QTableWidgetItem *kpItem = new QTableWidgetItem(), 
 					 *kiItem = new QTableWidgetItem(), 
-					 *kdItem = new QTableWidgetItem();
+					 *kdItem = new QTableWidgetItem(),
+					 *pidIDItem = new QTableWidgetItem();
 	
 	
 	if (currentRow+1 > ui.pidRecordTable->rowCount()) {
@@ -127,14 +143,18 @@ void heuRobocon:: on_sendButton_clicked()
 	sendData.dataInfo.dataType = HEURC_dataFormat::dataType_Double;
 
 	sendData.dataInfo.dataNum = 0x0003;
-
+	temp = ui.pidNum->text();
+	ui.pidRecordTable->setCurrentCell(currentRow, 1);
+	pidIDItem->setText(temp);
+	ui.pidRecordTable->setItem(currentRow, 0, pidIDItem);
 	temp = ui.Kp->text();
 	sendData.KpData = temp.toDouble();
 	if (temp.size() == 0) {
 		temp = "0";
 	}
 	kpItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 0, kpItem);
+	
+	ui.pidRecordTable->setItem(currentRow, 1, kpItem);
 
 	temp = ui.Ki->text();
 	sendData.KiData = temp.toDouble();
@@ -142,7 +162,7 @@ void heuRobocon:: on_sendButton_clicked()
 		temp = "0";
 	}
 	kiItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 1, kiItem);
+	ui.pidRecordTable->setItem(currentRow, 2, kiItem);
 
 	temp = ui.Kd->text();
 	sendData.KdData = temp.toDouble();
@@ -150,7 +170,7 @@ void heuRobocon:: on_sendButton_clicked()
 		temp = "0";
 	}
 	kdItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 2, kdItem);
+	ui.pidRecordTable->setItem(currentRow, 3, kdItem);
 
 	currentRow++;
 
@@ -158,7 +178,7 @@ void heuRobocon:: on_sendButton_clicked()
 		msg[i] = sendData.u8Data[i];
 	}
 
-	ui.textEdit->moveCursor(QTextCursor::Start);
+	ui.textEdit->moveCursor(QTextCursor::End);
 	QDateTime *dataTime = new QDateTime();
 	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss "));
 
@@ -185,7 +205,7 @@ void heuRobocon::recv()
 	{
 		data.resize(clientudp->pendingDatagramSize());
 		clientudp->readDatagram(data.data(), data.size());
-		ui.reciver->moveCursor(QTextCursor::Start);
+		ui.reciver->moveCursor(QTextCursor::End);
 		ui.reciver->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
 		int RxNum = ui.RxNumLabel->text().toInt();
 		ui.RxNumLabel->setText(QString::number(RxNum+data.size()));
@@ -268,7 +288,12 @@ void heuRobocon::dataStore(QVector<double> dataBuffer, quint16 idStart, quint16 
 		std::map<quint16, int>::iterator it = dataStorge.find(idStart + i);
 		if (it==dataStorge.end()) {//首次出现ID
 			dataStorge[dataId] = 0;
-			ui.selectedList->addItem("ID:"+QString::number(dataId));
+			if (dataId < 0x80) {
+				ui.selectedList->addItem("ID:" + QString::number(dataId));
+			}
+			else {
+				ui.selectedList->addItem("targetID:" + QString::number(dataId-0x80));
+			}
 			ui.selectedList->sortItems();
 		}
 		else {
@@ -281,10 +306,10 @@ void heuRobocon::on_generalSend_clicked()
 {
 	QByteArray msg;
 	QUdpSocket qus;
-	QString input= ui.sender->text(),temp;
+	QString input= ui.sender->text();
 	QDateTime *dataTime = new QDateTime();
 
-	ui.textEdit->moveCursor(QTextCursor::Start);
+	ui.textEdit->moveCursor(QTextCursor::End);
 	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
 	int format = ui.sendFormatComboBox->currentIndex();
 	if (format == 0){
@@ -305,8 +330,7 @@ void heuRobocon::on_generalSend_clicked()
 	else if (format == 1) {
 		msg = input.toUtf8();
 	}
-	/*msg = input.toUtf8();*/
-	temp = msg.toHex();
+	QString temp = msg.toHex();
 	ui.textEdit->insertPlainText(temp+'\r\n');
 
 	int TxNum = ui.TxNumLabel->text().toInt();
@@ -330,7 +354,7 @@ void heuRobocon::on_readPIDButton_clicked()
 	sendData.dataInfo.header = 0XFFBB;
 
 	sendData.dataInfo.dataType = HEURC_dataFormat::dataType_Char;
-	//header format:1001 0000 XXXX XXXX
+	//dataID format:1001 0000 XXXX XXXX
 	sendData.dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12;
 	sendData.dataInfo.dataNum = 0x0000;
 	msg.append(sendData.u8Data[0]);
@@ -347,6 +371,10 @@ void heuRobocon::on_readPIDButton_clicked()
 	ui.Kp->setReadOnly(true);
 	ui.Ki->setReadOnly(true);
 	ui.Kd->setReadOnly(true);
+	ui.textEdit->moveCursor(QTextCursor::End);
+	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
+	QString temp = msg.toHex();
+	ui.textEdit->insertPlainText(temp + '\r\n');
 }
 void heuRobocon::changePID(QVector<double> pidData)
 {
@@ -363,6 +391,15 @@ void heuRobocon::on_exportPIDTableButton_clicked()
 	saveTableDialog *saveTable=new saveTableDialog();
 	connect(saveTable, SIGNAL(convertDir(QString)), this, SLOT(saveTable(QString)));
 	saveTable->exec();
+}
+void heuRobocon::on_deleteRowButton_clicked()
+{
+	int index = ui.pidRecordTable->currentRow();
+	ui.pidRecordTable->removeRow(index);
+}
+void heuRobocon::resizeEvent(QResizeEvent * event)
+{
+	autoAbjustPIDRceordTable();
 }
 void heuRobocon::saveTable(QString filepath)
 {
@@ -423,6 +460,26 @@ void heuRobocon::saveTable(QString filepath)
 	}
 
 }
+void heuRobocon::autoAbjustPIDRceordTable()
+{
+
+	ui.pidRecordTable->setColumnWidth(0, 60);
+	ui.pidRecordTable->setColumnWidth(1, 80);
+	ui.pidRecordTable->setColumnWidth(2, 80);
+	ui.pidRecordTable->setColumnWidth(3, 80);
+    ui.pidRecordTable->setColumnWidth(4, 80);
+	int width = ui.pidRecordTable->width();
+	width -= 380;
+	width /= 3;
+	ui.pidRecordTable->setColumnWidth(4, width+1);
+	ui.pidRecordTable->setColumnWidth(5, width+1);
+	ui.pidRecordTable->setColumnWidth(6, width+1);
+}
+void heuRobocon::on_addRow_clicked()
+{
+	int index = ui.pidRecordTable->currentRow();
+	ui.pidRecordTable->insertRow(index+1);
+}
 void heuRobocon::on_clearTableButton_clicked()
 {
 	currentRow = 0;
@@ -431,9 +488,13 @@ void heuRobocon::on_clearTableButton_clicked()
 void heuRobocon::on_painterTemp_clicked()
 {	
 	QVector<quint16> lineID = readItemsDig(ui.toPaintList);
-	painter *painterLine = new painter(lineID);
-	connect(this, SIGNAL(sendData(quint16, double)), painterLine, SLOT(reciveFilter(quint16, double)),Qt::QueuedConnection);
+	QVector<quint16> targetDataId;
+	QVector<double> targetInit=searchForInitData(lineID,targetDataId);
+	painter *painterLine = new painter(lineID, targetDataId, targetInit);
+	
+	connect(this, SIGNAL(sendData(quint16, double)), painterLine, SLOT(reciveFilter(quint16, double)));
 	connect(this, SIGNAL(controlStartPaint()), painterLine, SLOT(autostart()), Qt::QueuedConnection);
+	connect(painterLine, SIGNAL(killMyself(painter*)), this, SLOT(killPainter(painter*)), Qt::QueuedConnection);
 	painterLine->show();
 }
 void heuRobocon::on_addSelectdeButton_clicked()
@@ -501,7 +562,7 @@ void heuRobocon::on_dataIDButton_clicked()
 			std::map<quint16, int>::iterator it = dataStorge.find(dataId);
 			if (it == dataStorge.end()) {//首次出现ID
 				dataStorge[dataId] = 0;
-				ui.selectedList->addItem("ID:" + QString::number(dataId));
+				ui.selectedList->addItem("ID:" + QString("%1").arg(dataId, 4, 10, QChar('0')));
 			}
 			dataStorge[dataId]++;
 		}
@@ -563,8 +624,14 @@ void heuRobocon::on_deleteSelected0Button_clicked()
 	itemList = ui.selectedList->selectedItems();
 	for (int i = 0; i < itemList.size(); i++) {
 		QListWidgetItem* sel = itemList[i];
-		quint16 key=quint16( sel->text().split(":")[1].toInt());
-		dataStorge.erase(key);
+		QStringList strSplit=sel->text().split(":");
+		quint16 key=quint16(strSplit[1].toInt());
+		if (strSplit[0] == "ID") {
+			dataStorge.erase(key);
+		}
+		else {
+			dataStorge.erase(key+0x80);
+		}
 		int r = ui.selectedList->row(sel);
 		ui.selectedList->takeItem(r);
 		ui.selectedList->sortItems();
@@ -572,14 +639,157 @@ void heuRobocon::on_deleteSelected0Button_clicked()
 }
 QVector<quint16> heuRobocon::readItemsDig(QListWidget* listWidget)
 {
-	
 	QVector<quint16> lineID;
 	int rowCount = listWidget->count();
 	for (int row = 0; row < rowCount; row++) {
 		QListWidgetItem* item = listWidget->item(row);
 		QStringList splitString = item->text().split(":");
-		quint16 temp = quint16(splitString.last().toInt());
-		lineID.append(temp);
+		quint16 temp = quint16(splitString[1].toInt());
+		if (splitString[0]=="ID") {
+			lineID.append(temp);
+		}
+		else {
+			lineID.append(temp+0x080);
+		}
 	}
 	return lineID;
+}
+QVector<double> heuRobocon::searchForInitData(QVector<quint16> dataID, QVector<quint16>& targetDataId)
+{
+	QVector<double> initData;
+	for (auto id : dataID) {
+		if (id < 0x80) {
+			continue;
+		}
+		targetDataId.append(id);
+		QMap<quint16, double>::Iterator it;
+		it = targetLinInit.find(id);
+		if (it != targetLinInit.end()) {
+			initData.append(it.value());
+		}
+		else {
+			initData.append(0);
+		}
+
+	}
+	return initData;
+}
+void heuRobocon::on_addTargetLineButton_clicked()
+{
+	QString idLineEditaText = ui.taragetLIneEdit->text();
+	QStringList splitStringList = idLineEditaText.split(";");
+	for (auto str : splitStringList)
+	{
+		bool ok;
+		quint16 dataId = quint16(str.toInt(&ok));		
+		if (ok) {
+			std::map<quint16, int>::iterator it = dataStorge.find(dataId+0x80);
+			if (it == dataStorge.end()) {//首次出现ID
+				dataStorge[dataId+0x80] = 0;
+				ui.selectedList->addItem("targetID:" + QString("%1").arg(dataId, 4, 10, QChar('0')));
+			}
+			dataStorge[dataId+0x80]++;
+		}
+		else {
+			QStringList regStringList = str.split(":");
+			bool ok2 = false;
+			if (regStringList.size() != 2) {
+				break;
+			}
+			quint16 dataIdStart = quint16(regStringList[0].toInt(&ok2));
+			if (!ok2) {
+				break;
+			}
+			quint16 dataIdEnd = quint16(regStringList[1].toInt(&ok2));
+			if (!ok2) {
+				break;
+			}
+			if (dataIdStart > dataIdEnd) {
+				break;
+			}
+			for (int id = dataIdStart; id <= dataIdEnd; id++) {
+				std::map<quint16, int>::iterator it = dataStorge.find(id+0x80);
+				if (it == dataStorge.end()) {//首次出现ID
+					dataStorge[id+0x80] = 0;
+					ui.selectedList->addItem("targetID:" + QString("%1").arg(id, 4, 10, QChar('0')));
+				}
+				dataStorge[id+0x80]++;
+			}
+		}
+	}
+	ui.selectedList->sortItems();
+}
+void heuRobocon::on_targetButton_clicked()
+{
+	QUdpSocket qus;
+	
+	QDateTime *dataTime = new QDateTime();
+	HEURC_dataFormat::dataInfoDef dataInfo;
+	//header format:1111 1111 1011 1011
+	dataInfo.header = 0XFFBB;
+	dataInfo.dataType = HEURC_dataFormat::dataType_Double;
+	//dataID format:1001 0000 XXXX XXXX
+	dataInfo.dataID = (uint16_t)ui.targetNumSpinBox->text().toInt() | 0x09 << 12|0x02<<8;
+	double data;
+	QString str= ui.targetEdit->text();
+	if (str.isEmpty()) {
+		data = 0;
+	}
+	else {
+		data = str.toDouble();
+	}
+	QByteArray msg;
+	switch (ui.targetFormatComboBox->currentIndex()) {
+		case 0:
+			msg = covertDataToSend<double, 1>(dataInfo, &data);
+			break;
+		case 1:
+			msg = covertDataToSend<int, 1>(dataInfo,&data);
+			break;
+		case 2:
+			msg = covertDataToSend<float, 1>(dataInfo, &data);
+			break;
+		case 3:
+			msg = covertDataToSend<char, 1>(dataInfo, &data);
+			break;
+	}
+	qus.writeDatagram(msg, QHostAddress(getHostAddress()), getPort());
+
+	quint16 targetId =quint16( ui.targetNumSpinBox->text().toInt());
+	targetLinInit[targetId + 0x80] = data;
+	QVector<double> *tempData=new QVector<double>();
+	tempData->append(data);
+	dataStore(*tempData, targetId+0x80, 1);
+	delete tempData;
+	int TxNum = ui.TxNumLabel->text().toInt();
+	ui.TxNumLabel->setText(QString::number(TxNum + msg.size()));
+
+	ui.textEdit->moveCursor(QTextCursor::End);
+	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
+	QString temp = msg.toHex();
+	ui.textEdit->insertPlainText(temp + '\r\n');
+}
+template<typename T,quint16 num>
+QByteArray heuRobocon::covertDataToSend(HEURC_dataFormat::dataInfoDef dataInfo,double data[num])
+{
+	QByteArray msg;
+	typedef union {
+		struct  dataDefStruct{
+			HEURC_dataFormat::dataInfoDef _dataInfo;
+			T data[num];
+		}dataDef;
+		uint8_t u8Data[sizeof(dataDefStruct)];
+	} sendType;
+	sendType sendData;
+	sendData.dataDef._dataInfo.header = dataInfo.header;
+	sendData.dataDef._dataInfo.dataID = dataInfo.dataID;
+	sendData.dataDef._dataInfo.dataNum = num;
+	sendData.dataDef._dataInfo.dataType = dataInfo.dataType;
+	for (int i = 0; i < num; i++) {
+		sendData.dataDef.data[i] = T(data[i]);
+	}
+	for (int i = 0; i < sizeof(sendType); i++) {
+		msg[i] = sendData.u8Data[i];
+	}
+	return msg;
 }

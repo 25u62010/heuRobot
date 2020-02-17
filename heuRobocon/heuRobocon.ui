@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>948</width>
-    <height>531</height>
+    <width>1005</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>heuRobocon</string>
+   <string>哈尔滨工程大学竞技机器人队调试上位机1.0</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../logo.ico</normaloff>../logo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -24,7 +28,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideLeft</enum>
@@ -41,37 +45,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <widget class="QTextEdit" name="reciver">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QPushButton" name="pushButton_2">
-               <property name="text">
-                <string>清除接收区</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
              <item>
               <widget class="QLabel" name="label_9">
                <property name="text">
@@ -93,7 +67,37 @@
                </item>
               </widget>
              </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_2">
+               <property name="text">
+                <string>清除接收区</string>
+               </property>
+              </widget>
+             </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="reciver">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -184,17 +188,190 @@
       </widget>
       <widget class="QWidget" name="PIDchangeTab">
        <attribute name="title">
-        <string>PID发送与记录</string>
+        <string>PID调试与记录</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox">
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <item>
+           <widget class="QGroupBox" name="changePIdGroup">
+            <property name="title">
+             <string>PID修改</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>pid编号</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="Kp">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QPushButton" name="readPIDButton">
+               <property name="text">
+                <string>读取pid</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QPushButton" name="send">
+               <property name="text">
+                <string>修改pid</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QSpinBox" name="pidNum"/>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Kd</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="Ki">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Kp</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Ki</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLineEdit" name="Kd">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string>发送目标值</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>数据id</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QSpinBox" name="targetNumSpinBox"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>数据类型</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignHCenter|Qt::AlignTop</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QPushButton" name="targetButton">
+               <property name="text">
+                <string>发送</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="targetFormatComboBox">
+               <item>
+                <property name="text">
+                 <string>double</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>int</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>float</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>char</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="targetEdit">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="pidRecordGroupBox">
           <property name="title">
            <string>pid记录</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
             <widget class="QTableWidget" name="pidRecordTable">
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
              <row>
               <property name="text">
                <string>0</string>
@@ -225,6 +402,11 @@
                <string>5</string>
               </property>
              </row>
+             <column>
+              <property name="text">
+               <string>pidID</string>
+              </property>
+             </column>
              <column>
               <property name="text">
                <string>Kp</string>
@@ -313,157 +495,6 @@
               </spacer>
              </item>
             </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QGroupBox" name="changePIdGroup">
-          <property name="title">
-           <string>PID修改</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="2">
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>    Ki</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="Ki">
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="3">
-            <layout class="QVBoxLayout" name="verticalLayout_5">
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>    Kd</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="Kd">
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="5">
-            <layout class="QVBoxLayout" name="verticalLayout_7">
-             <item>
-              <widget class="QLabel" name="changLabel">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="send">
-               <property name="text">
-                <string>修改pid</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="6">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="0">
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <item>
-              <widget class="QLabel" name="label_6">
-               <property name="text">
-                <string>pid编号</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="pidNum"/>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="4">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QLabel" name="label_7">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="readPIDButton">
-               <property name="text">
-                <string>读取pid</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1">
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>    Kp</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="Kp">
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="7">
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -592,6 +623,20 @@
             </layout>
            </item>
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_17">
+             <item>
+              <widget class="QLineEdit" name="taragetLIneEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="addTargetLineButton">
+               <property name="text">
+                <string>添加目标曲线</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="QListWidget" name="selectedList"/>
            </item>
            <item>
@@ -659,7 +704,7 @@
         <item>
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>IP地址</string>
+           <string>发送到IP地址：</string>
           </property>
          </widget>
         </item>
@@ -787,24 +832,15 @@
   <tabstop>port</tabstop>
   <tabstop>clearTxRxButton</tabstop>
   <tabstop>reciver</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>reciveFormatComboBox</tabstop>
   <tabstop>sender</tabstop>
   <tabstop>generalSend</tabstop>
   <tabstop>sendFormatComboBox</tabstop>
   <tabstop>textEdit</tabstop>
   <tabstop>pushButton</tabstop>
-  <tabstop>pidNum</tabstop>
-  <tabstop>Kp</tabstop>
-  <tabstop>Ki</tabstop>
-  <tabstop>Kd</tabstop>
-  <tabstop>readPIDButton</tabstop>
-  <tabstop>send</tabstop>
   <tabstop>addRow</tabstop>
   <tabstop>deleteRowButton</tabstop>
   <tabstop>clearTableButton</tabstop>
   <tabstop>exportPIDTableButton</tabstop>
-  <tabstop>pidRecordTable</tabstop>
   <tabstop>dataIDLineEdit</tabstop>
   <tabstop>dataIDButton</tabstop>
   <tabstop>selectedList</tabstop>
@@ -833,28 +869,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>582</x>
-     <y>429</y>
+     <x>601</x>
+     <y>496</y>
     </hint>
     <hint type="destinationlabel">
      <x>601</x>
      <y>215</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_2</sender>
-   <signal>clicked()</signal>
-   <receiver>reciver</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>129</x>
-     <y>429</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>123</x>
-     <y>75</y>
     </hint>
    </hints>
   </connection>
@@ -865,12 +885,12 @@
    <slot>clearContents()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>271</y>
+     <x>1071</x>
+     <y>273</y>
     </hint>
     <hint type="destinationlabel">
-     <x>135</x>
-     <y>202</y>
+     <x>160</x>
+     <y>273</y>
     </hint>
    </hints>
   </connection>
@@ -882,11 +902,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>129</x>
-     <y>429</y>
+     <y>496</y>
     </hint>
     <hint type="destinationlabel">
      <x>215</x>
-     <y>393</y>
+     <y>356</y>
     </hint>
    </hints>
   </connection>
@@ -897,12 +917,12 @@
    <slot>on_IP2_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>491</y>
+     <x>677</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
-     <x>626</x>
-     <y>140</y>
+     <x>512</x>
+     <y>447</y>
     </hint>
    </hints>
   </connection>
@@ -913,12 +933,12 @@
    <slot>on_IP1_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>477</x>
-     <y>491</y>
+     <x>624</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
-     <x>364</x>
-     <y>43</y>
+     <x>518</x>
+     <y>533</y>
     </hint>
    </hints>
   </connection>
@@ -929,12 +949,12 @@
    <slot>on_IP3_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>551</x>
-     <y>491</y>
+     <x>714</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
-     <x>717</x>
-     <y>118</y>
+     <x>496</x>
+     <y>498</y>
     </hint>
    </hints>
   </connection>
@@ -945,12 +965,12 @@
    <slot>on_IP4_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>588</x>
-     <y>491</y>
+     <x>751</x>
+     <y>567</y>
     </hint>
     <hint type="destinationlabel">
-     <x>748</x>
-     <y>80</y>
+     <x>512</x>
+     <y>476</y>
     </hint>
    </hints>
   </connection>
@@ -961,8 +981,8 @@
    <slot>on_sendButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>662</x>
-     <y>125</y>
+     <x>800</x>
+     <y>126</y>
     </hint>
     <hint type="destinationlabel">
      <x>169</x>
@@ -977,11 +997,11 @@
    <slot>selectAll()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>583</x>
-     <y>105</y>
+     <x>649</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
-     <x>623</x>
+     <x>728</x>
      <y>116</y>
     </hint>
    </hints>
@@ -993,12 +1013,28 @@
    <slot>selectAll()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>584</x>
-     <y>306</y>
+     <x>650</x>
+     <y>330</y>
     </hint>
     <hint type="destinationlabel">
-     <x>704</x>
-     <y>403</y>
+     <x>770</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>reciver</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>123</x>
+     <y>496</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>123</x>
+     <y>75</y>
     </hint>
    </hints>
   </connection>

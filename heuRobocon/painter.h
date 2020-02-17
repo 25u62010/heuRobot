@@ -35,7 +35,10 @@ protected:
 public:
 	painter() {}
 	painter(QVector<quint16> lineToShow,QWidget *parent = 0);
+	painter::painter(QVector<quint16> line, QVector<quint16> targetLineIDVector, QVector<double> targetLineInit, QWidget *parent = 0);
 	~painter();
+signals:
+	void killMyself(painter*);
 private:
 	Ui::painter ui;
 	QVector<QPointF> getData(quint16 id);
@@ -44,8 +47,8 @@ private:
 	int timeId;
 	double time=0;
 	double showTime = 0;
-	double yMin=0;
-	double yMax=0;
+	double yMin= qInf();
+	double yMax=-qInf();
 	int maxSize = 5000;
 	enum painterMode painterNowStatus= stopShow;
 	QTime dataTime;
@@ -73,6 +76,10 @@ private slots:
 	void on_hideAllButton_clicked();
 	void on_getProcess_clicked();
 	void autostart();
+protected:
+	void closeEvent(QCloseEvent *event) {
+		emit killMyself(this);
+	}
 }; 
 
 #endif 

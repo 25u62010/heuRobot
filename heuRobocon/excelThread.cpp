@@ -21,7 +21,7 @@ void excelThread::endRecordSlot()
 	emit askForInfo();
 }
 void excelThread::addData(quint16 id, double data)
-{
+{ 
 	for (auto _id : _dataID) {
 		if (_id == id) {
 			dataBuffer[id].append(data);

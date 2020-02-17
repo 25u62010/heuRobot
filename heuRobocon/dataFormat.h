@@ -13,7 +13,6 @@ namespace HEURC_dataFormat {
 		myUint16 dataType;
 		myUint16 dataNum;
 	}dataInfoDef;
-
 	enum dataType {
 		dataType_Double = 1,
 		dataType_Float,

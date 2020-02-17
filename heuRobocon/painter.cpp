@@ -21,9 +21,55 @@ painter::painter(QVector<quint16> lineToShow,QWidget *parent) : QWidget(parent)
 	chartView->setRubberBand(QtCharts::QChartView::RectangleRubberBand);
 	lineID = lineToShow;
 	if (lineID.isEmpty() == false) {
-		for (auto id : lineID) {
-			dataTemp[id] = 0;
-		}
+		ui.autoAbjustButton->setEnabled(true);
+		ui.clearLineButton->setEnabled(true);
+		ui.downTimeEdit->setEnabled(true);
+		ui.longestTimeEdit->setEnabled(true);
+		ui.pauseShowButton->setEnabled(true);
+		ui.selectLIneButton->setEnabled(true);
+		ui.selectLIneComboBox->setEnabled(true);
+		ui.showRegionTimeButton->setEnabled(true);
+		ui.uperTimeEdit->setEnabled(true);
+		ui.viewAllButton->setEnabled(true);
+		ui.showAllButton->setEnabled(true);
+		ui.hideAllButton->setEnabled(true);
+	}
+	axisX->setRange(0, maxSize);
+	axisX->setLabelFormat("%g");
+	axisX->setTitleText("axisX");
+
+	axisY->setRange(-1.5, 1.5);
+	axisY->setLabelFormat("%g");
+	axisY->setTitleText("axisY");
+
+	lineSeriesInit();
+
+	m_chart->legend()->show();
+	m_chart->setTitle("heuRobocon");
+
+	QVBoxLayout *layout = ui.painterLayout;
+	layout->insertWidget(0, chartView);
+	timeId = QObject::startTimer(0);
+
+	QDoubleValidator *v = new QDoubleValidator();
+	ui.longestTimeEdit->setValidator(v);
+	ui.downTimeEdit->setValidator(v);
+	ui.uperTimeEdit->setValidator(v);
+	double maxTimeDisplay = ui.longestTimeEdit->text().toDouble();
+	axisX->setRange(0, maxTimeDisplay);
+	dataTime = QTime(0,0,0);
+}
+painter::painter(QVector<quint16> line,QVector<quint16> targetLineIDVector, QVector<double> targetLineInit, QWidget *parent) : QWidget(parent)
+{
+	ui.setupUi(this);
+	lineID = line;
+	for (int i = 0; i < targetLineIDVector.size();i++) {
+		dataTemp[targetLineIDVector[i]] = targetLineInit[i];
+	}
+	m_chart = new QtCharts::QChart;
+	QtCharts::QChartView *chartView = new QtCharts::QChartView(m_chart);
+	chartView->setRubberBand(QtCharts::QChartView::RectangleRubberBand);
+	if (lineID.isEmpty() == false) {
 		ui.autoAbjustButton->setEnabled(true);
 		ui.clearLineButton->setEnabled(true);
 		ui.downTimeEdit->setEnabled(true);
@@ -50,7 +96,7 @@ painter::painter(QVector<quint16> lineToShow,QWidget *parent) : QWidget(parent)
 
 	QVBoxLayout *layout = ui.painterLayout;
 	layout->insertWidget(0, chartView);
-	timeId = QObject::startTimer(0);
+	timeId = QObject::startTimer(5);
 
 	QDoubleValidator *v = new QDoubleValidator();
 	ui.longestTimeEdit->setValidator(v);
@@ -58,17 +104,22 @@ painter::painter(QVector<quint16> lineToShow,QWidget *parent) : QWidget(parent)
 	ui.uperTimeEdit->setValidator(v);
 	double maxTimeDisplay = ui.longestTimeEdit->text().toDouble();
 	axisX->setRange(0, maxTimeDisplay);
-	lineID = lineToShow;
 	dataTime = QTime(QTime::currentTime());
 }
 void painter::lineSeriesInit()
 {
 	lineSeriesVector.clear();
 	for (auto id : lineID) {
-		myLineSries* lineSeies = new myLineSries(id, "ID:" + QString::number(id));
+		myLineSries* lineSeies;
+		if (id < 0x80){
+			lineSeies = new myLineSries(id, "ID:" + QString::number(id));
+		}
+		else {
+			lineSeies = new myLineSries(id, "targetID:" + QString::number(id-0x80));
+		}
 		m_chart->addSeries(lineSeies);
 		lineSeies->setUseOpenGL(true);//openGl 加速
-		qDebug() << lineSeies->useOpenGL();
+		//qDebug() << lineSeies->useOpenGL();
 		m_chart->setAxisY(axisY, lineSeies);
 		m_chart->setAxisX(axisX, lineSeies);
 		lineSeriesVector.append(lineSeies);
@@ -112,6 +163,9 @@ void painter::timerEvent(QTimerEvent *event)
 		}
 		else if (painterNowStatus == showAllMode) {
 			showAll();
+		}
+		else {//防呆处理
+			return;
 		}
 		showTime = time;
 		for (auto &lineSerie : lineSeriesVector) {
@@ -242,6 +296,7 @@ void painter::on_pauseShowButton_clicked()
 		time = 0;
 		showTime = 0;
 		painterNowStatus = autoAbjustMode;
+		dataTime.restart();
 		ui.pauseShowButton->setText(QStringLiteral("暂停显示"));
 	}	
 	else if(painterNowStatus == pauseShow){
@@ -264,7 +319,7 @@ void painter::on_clearLineButton_clicked()
 		painterNowStatus = stopShow;
 	}
 	axisX->setRange(0, maxTimeDisplay);
-	time = 0;showTime = 0;yMin = 0;yMax = 0;
+	time = 0;showTime = 0;yMin = qInf();yMax =-qInf();
 }
 void painter::reciveFilter(quint16 dataID, double data)
 {
