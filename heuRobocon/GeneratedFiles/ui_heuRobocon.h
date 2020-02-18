@@ -66,35 +66,25 @@ public:
     QVBoxLayout *verticalLayout_17;
     QHBoxLayout *horizontalLayout_15;
     QGroupBox *changePIdGroup;
-    QVBoxLayout *verticalLayout_8;
-    QHBoxLayout *horizontalLayout_13;
-    QVBoxLayout *verticalLayout_6;
+    QGridLayout *gridLayout_2;
     QLabel *label_6;
-    QSpinBox *pidNum;
-    QVBoxLayout *verticalLayout_3;
-    QLabel *label;
     QLineEdit *Kp;
-    QVBoxLayout *verticalLayout_4;
-    QLabel *label_2;
-    QLineEdit *Ki;
-    QVBoxLayout *verticalLayout_5;
-    QLabel *label_3;
-    QLineEdit *Kd;
-    QVBoxLayout *verticalLayout_2;
-    QLabel *label_7;
     QPushButton *readPIDButton;
-    QVBoxLayout *verticalLayout_7;
-    QLabel *changLabel;
     QPushButton *send;
-    QSpacerItem *horizontalSpacer_4;
-    QVBoxLayout *verticalLayout_18;
+    QSpinBox *pidNum;
+    QLabel *label_3;
+    QLineEdit *Ki;
+    QLabel *label;
+    QLabel *label_2;
+    QLineEdit *Kd;
     QGroupBox *groupBox;
-    QHBoxLayout *horizontalLayout_16;
+    QGridLayout *gridLayout;
+    QLabel *label_12;
     QSpinBox *targetNumSpinBox;
+    QLabel *label_13;
+    QPushButton *targetButton;
     QComboBox *targetFormatComboBox;
     QLineEdit *targetEdit;
-    QPushButton *targetButton;
-    QSpacerItem *horizontalSpacer;
     QGroupBox *pidRecordGroupBox;
     QHBoxLayout *horizontalLayout_6;
     QTableWidget *pidRecordTable;
@@ -161,7 +151,7 @@ public:
             heuRoboconClass->setObjectName(QString::fromUtf8("heuRoboconClass"));
         heuRoboconClass->resize(1005, 612);
         QIcon icon;
-        icon.addFile(QString::fromUtf8("../logo.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/heuRobocon/logo.ico"), QSize(), QIcon::Normal, QIcon::Off);
         heuRoboconClass->setWindowIcon(icon);
         centralWidget = new QWidget(heuRoboconClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
@@ -302,141 +292,95 @@ public:
         horizontalLayout_15->setObjectName(QString::fromUtf8("horizontalLayout_15"));
         changePIdGroup = new QGroupBox(PIDchangeTab);
         changePIdGroup->setObjectName(QString::fromUtf8("changePIdGroup"));
-        verticalLayout_8 = new QVBoxLayout(changePIdGroup);
-        verticalLayout_8->setSpacing(6);
-        verticalLayout_8->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
-        horizontalLayout_13 = new QHBoxLayout();
-        horizontalLayout_13->setSpacing(6);
-        horizontalLayout_13->setObjectName(QString::fromUtf8("horizontalLayout_13"));
-        verticalLayout_6 = new QVBoxLayout();
-        verticalLayout_6->setSpacing(6);
-        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        gridLayout_2 = new QGridLayout(changePIdGroup);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         label_6 = new QLabel(changePIdGroup);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
-        verticalLayout_6->addWidget(label_6);
-
-        pidNum = new QSpinBox(changePIdGroup);
-        pidNum->setObjectName(QString::fromUtf8("pidNum"));
-
-        verticalLayout_6->addWidget(pidNum);
-
-
-        horizontalLayout_13->addLayout(verticalLayout_6);
-
-        verticalLayout_3 = new QVBoxLayout();
-        verticalLayout_3->setSpacing(6);
-        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
-        label = new QLabel(changePIdGroup);
-        label->setObjectName(QString::fromUtf8("label"));
-
-        verticalLayout_3->addWidget(label);
+        gridLayout_2->addWidget(label_6, 0, 0, 1, 1);
 
         Kp = new QLineEdit(changePIdGroup);
         Kp->setObjectName(QString::fromUtf8("Kp"));
         Kp->setMaximumSize(QSize(100, 16777215));
 
-        verticalLayout_3->addWidget(Kp);
+        gridLayout_2->addWidget(Kp, 1, 1, 1, 1);
 
+        readPIDButton = new QPushButton(changePIdGroup);
+        readPIDButton->setObjectName(QString::fromUtf8("readPIDButton"));
 
-        horizontalLayout_13->addLayout(verticalLayout_3);
+        gridLayout_2->addWidget(readPIDButton, 1, 4, 1, 1);
 
-        verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setSpacing(6);
-        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        label_2 = new QLabel(changePIdGroup);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        send = new QPushButton(changePIdGroup);
+        send->setObjectName(QString::fromUtf8("send"));
 
-        verticalLayout_4->addWidget(label_2);
+        gridLayout_2->addWidget(send, 1, 5, 1, 1);
+
+        pidNum = new QSpinBox(changePIdGroup);
+        pidNum->setObjectName(QString::fromUtf8("pidNum"));
+
+        gridLayout_2->addWidget(pidNum, 1, 0, 1, 1);
+
+        label_3 = new QLabel(changePIdGroup);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label_3, 0, 3, 1, 1);
 
         Ki = new QLineEdit(changePIdGroup);
         Ki->setObjectName(QString::fromUtf8("Ki"));
         Ki->setMaximumSize(QSize(100, 16777215));
 
-        verticalLayout_4->addWidget(Ki);
+        gridLayout_2->addWidget(Ki, 1, 2, 1, 1);
 
+        label = new QLabel(changePIdGroup);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setAlignment(Qt::AlignCenter);
 
-        horizontalLayout_13->addLayout(verticalLayout_4);
+        gridLayout_2->addWidget(label, 0, 1, 1, 1);
 
-        verticalLayout_5 = new QVBoxLayout();
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-        label_3 = new QLabel(changePIdGroup);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_2 = new QLabel(changePIdGroup);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_5->addWidget(label_3);
+        gridLayout_2->addWidget(label_2, 0, 2, 1, 1);
 
         Kd = new QLineEdit(changePIdGroup);
         Kd->setObjectName(QString::fromUtf8("Kd"));
         Kd->setMaximumSize(QSize(100, 16777215));
 
-        verticalLayout_5->addWidget(Kd);
-
-
-        horizontalLayout_13->addLayout(verticalLayout_5);
-
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        label_7 = new QLabel(changePIdGroup);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-
-        verticalLayout_2->addWidget(label_7);
-
-        readPIDButton = new QPushButton(changePIdGroup);
-        readPIDButton->setObjectName(QString::fromUtf8("readPIDButton"));
-
-        verticalLayout_2->addWidget(readPIDButton);
-
-
-        horizontalLayout_13->addLayout(verticalLayout_2);
-
-        verticalLayout_7 = new QVBoxLayout();
-        verticalLayout_7->setSpacing(6);
-        verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
-        changLabel = new QLabel(changePIdGroup);
-        changLabel->setObjectName(QString::fromUtf8("changLabel"));
-
-        verticalLayout_7->addWidget(changLabel);
-
-        send = new QPushButton(changePIdGroup);
-        send->setObjectName(QString::fromUtf8("send"));
-
-        verticalLayout_7->addWidget(send);
-
-
-        horizontalLayout_13->addLayout(verticalLayout_7);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_13->addItem(horizontalSpacer_4);
-
-        verticalLayout_18 = new QVBoxLayout();
-        verticalLayout_18->setSpacing(6);
-        verticalLayout_18->setObjectName(QString::fromUtf8("verticalLayout_18"));
-
-        horizontalLayout_13->addLayout(verticalLayout_18);
-
-
-        verticalLayout_8->addLayout(horizontalLayout_13);
+        gridLayout_2->addWidget(Kd, 1, 3, 1, 1);
 
 
         horizontalLayout_15->addWidget(changePIdGroup);
 
-
-        verticalLayout_17->addLayout(horizontalLayout_15);
-
         groupBox = new QGroupBox(PIDchangeTab);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        horizontalLayout_16 = new QHBoxLayout(groupBox);
-        horizontalLayout_16->setSpacing(6);
-        horizontalLayout_16->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_16->setObjectName(QString::fromUtf8("horizontalLayout_16"));
+        gridLayout = new QGridLayout(groupBox);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        label_12 = new QLabel(groupBox);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+
+        gridLayout->addWidget(label_12, 0, 0, 1, 1);
+
         targetNumSpinBox = new QSpinBox(groupBox);
         targetNumSpinBox->setObjectName(QString::fromUtf8("targetNumSpinBox"));
 
-        horizontalLayout_16->addWidget(targetNumSpinBox);
+        gridLayout->addWidget(targetNumSpinBox, 1, 0, 1, 1);
+
+        label_13 = new QLabel(groupBox);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+        label_13->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+
+        gridLayout->addWidget(label_13, 0, 1, 1, 1);
+
+        targetButton = new QPushButton(groupBox);
+        targetButton->setObjectName(QString::fromUtf8("targetButton"));
+
+        gridLayout->addWidget(targetButton, 1, 3, 1, 1);
 
         targetFormatComboBox = new QComboBox(groupBox);
         targetFormatComboBox->addItem(QString());
@@ -445,25 +389,19 @@ public:
         targetFormatComboBox->addItem(QString());
         targetFormatComboBox->setObjectName(QString::fromUtf8("targetFormatComboBox"));
 
-        horizontalLayout_16->addWidget(targetFormatComboBox);
+        gridLayout->addWidget(targetFormatComboBox, 1, 1, 1, 1);
 
         targetEdit = new QLineEdit(groupBox);
         targetEdit->setObjectName(QString::fromUtf8("targetEdit"));
         targetEdit->setMaximumSize(QSize(100, 16777215));
 
-        horizontalLayout_16->addWidget(targetEdit);
-
-        targetButton = new QPushButton(groupBox);
-        targetButton->setObjectName(QString::fromUtf8("targetButton"));
-
-        horizontalLayout_16->addWidget(targetButton);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_16->addItem(horizontalSpacer);
+        gridLayout->addWidget(targetEdit, 1, 2, 1, 1);
 
 
-        verticalLayout_17->addWidget(groupBox);
+        horizontalLayout_15->addWidget(groupBox);
+
+
+        verticalLayout_17->addLayout(horizontalLayout_15);
 
         pidRecordGroupBox = new QGroupBox(PIDchangeTab);
         pidRecordGroupBox->setObjectName(QString::fromUtf8("pidRecordGroupBox"));
@@ -814,13 +752,7 @@ public:
         QWidget::setTabOrder(generalSend, sendFormatComboBox);
         QWidget::setTabOrder(sendFormatComboBox, textEdit);
         QWidget::setTabOrder(textEdit, pushButton);
-        QWidget::setTabOrder(pushButton, pidNum);
-        QWidget::setTabOrder(pidNum, Kp);
-        QWidget::setTabOrder(Kp, Ki);
-        QWidget::setTabOrder(Ki, Kd);
-        QWidget::setTabOrder(Kd, readPIDButton);
-        QWidget::setTabOrder(readPIDButton, send);
-        QWidget::setTabOrder(send, addRow);
+        QWidget::setTabOrder(pushButton, addRow);
         QWidget::setTabOrder(addRow, deleteRowButton);
         QWidget::setTabOrder(deleteRowButton, clearTableButton);
         QWidget::setTabOrder(clearTableButton, exportPIDTableButton);
@@ -854,7 +786,7 @@ public:
         QObject::connect(allAddRecordButton, SIGNAL(clicked()), toRcordList, SLOT(selectAll()));
         QObject::connect(pushButton_2, SIGNAL(clicked()), reciver, SLOT(clear()));
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(heuRoboconClass);
@@ -862,7 +794,7 @@ public:
 
     void retranslateUi(QMainWindow *heuRoboconClass)
     {
-        heuRoboconClass->setWindowTitle(QApplication::translate("heuRoboconClass", "\345\223\210\345\260\224\346\273\250\345\267\245\347\250\213\345\244\247\345\255\246\347\253\236\346\212\200\346\234\272\345\231\250\344\272\272\351\230\237\350\260\203\350\257\225\344\270\212\344\275\215\346\234\2721.0", nullptr));
+        heuRoboconClass->setWindowTitle(QApplication::translate("heuRoboconClass", "\345\223\210\345\260\224\346\273\250\345\267\245\347\250\213\345\244\247\345\255\246\347\253\236\346\212\200\346\234\272\345\231\250\344\272\272\351\230\237\350\260\203\350\257\225\344\270\212\344\275\215\346\234\272", nullptr));
         baseReciveGroup->setTitle(QApplication::translate("heuRoboconClass", "\345\237\272\346\234\254\346\216\245\346\224\266\345\214\272", nullptr));
         label_9->setText(QApplication::translate("heuRoboconClass", "\346\230\276\347\244\272\346\240\274\345\274\217", nullptr));
         reciveFormatComboBox->setItemText(0, QApplication::translate("heuRoboconClass", "Hex", nullptr));
@@ -880,21 +812,21 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(baseTRTab), QApplication::translate("heuRoboconClass", "\345\237\272\346\234\254\346\224\266\345\217\221\345\214\272", nullptr));
         changePIdGroup->setTitle(QApplication::translate("heuRoboconClass", "PID\344\277\256\346\224\271", nullptr));
         label_6->setText(QApplication::translate("heuRoboconClass", "pid\347\274\226\345\217\267", nullptr));
-        label->setText(QApplication::translate("heuRoboconClass", "    Kp", nullptr));
         Kp->setText(QString());
-        label_2->setText(QApplication::translate("heuRoboconClass", "    Ki", nullptr));
-        label_3->setText(QApplication::translate("heuRoboconClass", "    Kd", nullptr));
-        label_7->setText(QString());
         readPIDButton->setText(QApplication::translate("heuRoboconClass", "\350\257\273\345\217\226pid", nullptr));
-        changLabel->setText(QString());
         send->setText(QApplication::translate("heuRoboconClass", "\344\277\256\346\224\271pid", nullptr));
+        label_3->setText(QApplication::translate("heuRoboconClass", "Kd", nullptr));
+        label->setText(QApplication::translate("heuRoboconClass", "Kp", nullptr));
+        label_2->setText(QApplication::translate("heuRoboconClass", "Ki", nullptr));
         groupBox->setTitle(QApplication::translate("heuRoboconClass", "\345\217\221\351\200\201\347\233\256\346\240\207\345\200\274", nullptr));
+        label_12->setText(QApplication::translate("heuRoboconClass", "\346\225\260\346\215\256id", nullptr));
+        label_13->setText(QApplication::translate("heuRoboconClass", "\346\225\260\346\215\256\347\261\273\345\236\213", nullptr));
+        targetButton->setText(QApplication::translate("heuRoboconClass", "\345\217\221\351\200\201", nullptr));
         targetFormatComboBox->setItemText(0, QApplication::translate("heuRoboconClass", "double", nullptr));
         targetFormatComboBox->setItemText(1, QApplication::translate("heuRoboconClass", "int", nullptr));
         targetFormatComboBox->setItemText(2, QApplication::translate("heuRoboconClass", "float", nullptr));
         targetFormatComboBox->setItemText(3, QApplication::translate("heuRoboconClass", "char", nullptr));
 
-        targetButton->setText(QApplication::translate("heuRoboconClass", "\345\217\221\351\200\201", nullptr));
         pidRecordGroupBox->setTitle(QApplication::translate("heuRoboconClass", "pid\350\256\260\345\275\225", nullptr));
         QTableWidgetItem *___qtablewidgetitem = pidRecordTable->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("heuRoboconClass", "pidID", nullptr));

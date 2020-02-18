@@ -54,7 +54,7 @@ heuRobocon::heuRobocon(QWidget *parent)
 	ui.pidRecordTable->setColumnWidth(3, 80);
 	ui.pidRecordTable->setColumnWidth(4, 80);
 	int width =900;
-	width -= 380;
+	width -= 330;
 	width /= 3;
 	ui.pidRecordTable->setColumnWidth(4, width + 1);
 	ui.pidRecordTable->setColumnWidth(5, width + 1);
@@ -469,7 +469,7 @@ void heuRobocon::autoAbjustPIDRceordTable()
 	ui.pidRecordTable->setColumnWidth(3, 80);
     ui.pidRecordTable->setColumnWidth(4, 80);
 	int width = ui.pidRecordTable->width();
-	width -= 380;
+	width -= 330;
 	width /= 3;
 	ui.pidRecordTable->setColumnWidth(4, width+1);
 	ui.pidRecordTable->setColumnWidth(5, width+1);

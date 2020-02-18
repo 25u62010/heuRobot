@@ -17,7 +17,12 @@ excelRecordManger::excelRecordManger(QVector<quint16> dataID,QWidget *parent)
 	}
 	else {
 		for (auto id : _dataID) {
-			dataName.append("dataID:" + QString::number(id));
+			if (id < 0x80) {
+				dataName.append("dataID:" + QString::number(id));
+			}
+			else{
+				dataName.append("targetID:" + QString::number(id-0x80));
+			}
 		}
 		ui.dataNameEdit->setText(dataName[0]);
 		ui.dataIDComboBox->addItems(dataName);

@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>哈尔滨工程大学竞技机器人队调试上位机1.0</string>
+   <string>哈尔滨工程大学竞技机器人队调试上位机</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../logo.ico</normaloff>../logo.ico</iconset>
+   <iconset resource="heuRobocon.qrc">
+    <normaloff>:/heuRobocon/logo.ico</normaloff>:/heuRobocon/logo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -28,7 +28,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideLeft</enum>
