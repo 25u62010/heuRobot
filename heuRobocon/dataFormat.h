@@ -18,6 +18,7 @@ namespace HEURC_dataFormat {
 		dataType_Float,
 		dataType_Int,
 		dataType_Char,
+		noData
 	};
 }
 

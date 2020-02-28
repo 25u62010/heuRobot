@@ -1,24 +1,19 @@
 #include "heuRobocon.h"
-#include <QUdpSocket>
-#include "qhostaddress.h"
-#include "qvalidator.h"
 #include <QTextCodec>
-#include <QDebug>
 #include <qdatetime.h>
-#include <QVector>
 #include <dataFormat.h>
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qdialog.h>
 #include <QAxObject.h>
 #include <cmath>
-#include <painter.h>
 #include <qlist.h>
 #include <qstringlist.h>
 #include <excelThread.h>
 #include "excelRecordManger.h"
 #include "QRegExp"
 #include <qcursor.h>
+#include <QDesktopServices>
 
 heuRobocon::heuRobocon(QWidget *parent)
 	: QMainWindow(parent)
@@ -36,10 +31,7 @@ heuRobocon::heuRobocon(QWidget *parent)
 	ui.ip4->setValidator(v2);
 	QIntValidator *v3 = new QIntValidator(0, 999999);
 	ui.port->setValidator(v3);
-	clientudp = new QUdpSocket(this);
-	clientudp->bind(1000);//绑定读数据端口(监听端口)，允许其他服务绑定到此端口
-	connect(clientudp, SIGNAL(readyRead()), this, SLOT(recv()));
-	connect(this, SIGNAL(sendPID(QVector<double>)), this, SLOT(changePID(QVector<double>)));
+	
 	ui.reciver->setReadOnly(true);
 	ui.textEdit->setReadOnly(true);
 
@@ -53,12 +45,109 @@ heuRobocon::heuRobocon(QWidget *parent)
 	ui.pidRecordTable->setColumnWidth(2, 80);
 	ui.pidRecordTable->setColumnWidth(3, 80);
 	ui.pidRecordTable->setColumnWidth(4, 80);
-	int width =900;
-	width -= 330;
-	width /= 3;
+	int width =(900-330)/3;
 	ui.pidRecordTable->setColumnWidth(4, width + 1);
 	ui.pidRecordTable->setColumnWidth(5, width + 1);
 	ui.pidRecordTable->setColumnWidth(6, width + 1);
+
+	connect(this, SIGNAL(sendPID(QVector<double>)), this, SLOT(changePID(QVector<double>)));
+	//udp初始化
+	udpInit();
+	//串口初始化
+	//待补充
+
+	//蓝牙初始化(失败)
+	discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
+	localDevice = new QBluetoothLocalDevice();
+	socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+	localDevice->powerOn();
+	
+	connect(discoveryAgent,
+		SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
+		this,
+		SLOT(addBlueToothDevicesToList(QBluetoothDeviceInfo))
+	);
+	connect(socket, SIGNAL(connected()), this, SLOT(bluetoothConnectedEvent()));//此信号在建立连接时发出。
+}
+
+//无论何种接收方式最终都要调用该函数，便于拓展功能
+void heuRobocon::dataRecv(const QByteArray data)
+{
+	bool accordantRule=false;
+	if (data.size() > 4) {
+		uint16_t dataId = data[3] << 8 | data[2];
+		accordantRule = checkReciveData(data, dataId);
+		if (accordantRule) {//符合协议则进行数据处理
+			reciveDateDeal(data, dataId);
+		}
+	}
+	writeToRecvieArea(data, accordantRule);//在接收区展示
+	updateReciveNum(data.size());
+}
+void heuRobocon::reciveDateDeal(const QByteArray data, const quint16 dataId)
+{
+	QVector<double> dataBuffer;
+	switch (data[4]) {//按照数据格式对数据进行解析
+	case HEURC_dataFormat::dataType_Double:
+		dataBuffer = dataConvert<double>(data);
+		break;
+	case HEURC_dataFormat::dataType_Float:
+		dataBuffer = dataConvert<float>(data);
+		break;
+	case HEURC_dataFormat::dataType_Int:
+		dataBuffer = dataConvert<int>(data);
+		break;
+	case HEURC_dataFormat::dataType_Char:
+		dataBuffer = dataConvert<char>(data);
+		break;
+	case HEURC_dataFormat::noData:
+		break;
+	}
+	switch ((dataId & 0x0f00) >> 8) {
+	case  0x00:
+		dataStore(dataBuffer, dataId & 0xff, data[6]);//传递数据
+		break;
+	case 0x01:
+		ui.pidNum->setValue((int)(dataId & 0xFF));
+		emit sendPID(dataBuffer);//回传PID
+		break;
+	case 0x02:
+		emit controlStartPaint();
+	}
+}
+template <typename T>
+QVector<double> heuRobocon::dataConvert(const QByteArray data)
+{
+	uint16_t dataNum = data[6];
+	uint16_t dataId = data[3] << 8 | data[2];
+	QVector<double> dataBuffer;
+	typedef union {
+		struct {
+			T data;
+		};
+		uint8_t u8Data[8];
+	} reciveMsgType;
+	reciveMsgType reciveBuff;
+	for (int i = 0; i <= dataNum - 1; i++) {
+		for (int j = 0; j < 8; j++) {
+			reciveBuff.u8Data[j] = data[uint(8 + i * sizeof(T) + j)];
+		}
+		dataBuffer.append((double)reciveBuff.data);
+	}
+	return dataBuffer;
+}
+void heuRobocon::dataSend(const QByteArray data)
+{
+	if (ui.udpChooseRadioButton->isChecked()) {
+		QUdpSocket qus;
+		qus.writeDatagram(data, QHostAddress(getHostAddress()), getPort());
+	}
+	else if (ui.blueToothChooseRadioButton->isChecked()) {
+		//此处待添加代码
+	}
+	else if (ui.serviealChooseRadioButton->isChecked()) {
+		//此处待添加代码
+	}
 }
 QHostAddress heuRobocon::getHostAddress()
 {
@@ -111,174 +200,51 @@ void heuRobocon::on_IP4_changed()
 void heuRobocon:: on_sendButton_clicked()
 {
 	autoAbjustPIDRceordTable();
-	typedef union{
-		struct{
-			HEURC_dataFormat::dataInfoDef dataInfo;
-			double KpData;
-			double KiData;
-			double KdData;
-		};
-		uint8_t u8Data[32];
-	} sendType;
-	sendType sendData;
-	QUdpSocket qus;
-	QByteArray msg;
+	HEURC_dataFormat::dataInfoDef dataInfo;
+	double pidData[3];
+	QStringList pidStringList;
+	
 	QString temp;
-	
-	QTableWidgetItem *kpItem = new QTableWidgetItem(), 
-					 *kiItem = new QTableWidgetItem(), 
-					 *kdItem = new QTableWidgetItem(),
-					 *pidIDItem = new QTableWidgetItem();
-	
-	
-	if (currentRow+1 > ui.pidRecordTable->rowCount()) {
-		ui.pidRecordTable->setRowCount(currentRow+1);
+	pidStringList.append(ui.pidNum->text());
+	pidStringList.append(ui.Kp->text());
+	pidStringList.append(ui.Ki->text());
+	pidStringList.append(ui.Kd->text());
+	for (int i = 0; i < 3; i++) {
+		bool ok;
+		pidData[i] = pidStringList[i + 1].toDouble(&ok);
+		if (ok==false) {
+			pidData[i]=0;
+			pidStringList[i + 1] = "0";
+		}
 	}
 	//header format:1111 1111 1011 1011
-	sendData.dataInfo.header = 0XFFBB;
+	dataInfo.header = 0XFFBB;
 	//dataID format:1001 0001 XXXX XXXX
-	sendData.dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12 | 0x01 << 8;
-	
-	//sendData.dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x06 << 12 | 0x00 << 8;//调试所用
-	sendData.dataInfo.dataType = HEURC_dataFormat::dataType_Double;
-
-	sendData.dataInfo.dataNum = 0x0003;
-	temp = ui.pidNum->text();
-	ui.pidRecordTable->setCurrentCell(currentRow, 1);
-	pidIDItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 0, pidIDItem);
-	temp = ui.Kp->text();
-	sendData.KpData = temp.toDouble();
-	if (temp.size() == 0) {
-		temp = "0";
-	}
-	kpItem->setText(temp);
-	
-	ui.pidRecordTable->setItem(currentRow, 1, kpItem);
-
-	temp = ui.Ki->text();
-	sendData.KiData = temp.toDouble();
-	if (temp.size() == 0) {
-		temp = "0";
-	}
-	kiItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 2, kiItem);
-
-	temp = ui.Kd->text();
-	sendData.KdData = temp.toDouble();
-	if (temp.size() == 0) {
-		temp = "0";
-	}
-	kdItem->setText(temp);
-	ui.pidRecordTable->setItem(currentRow, 3, kdItem);
-
-	currentRow++;
-
-	for (int i = 0; i < 32; i++) {
-		msg[i] = sendData.u8Data[i];
-	}
-
-	ui.textEdit->moveCursor(QTextCursor::End);
-	QDateTime *dataTime = new QDateTime();
-	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss "));
-
-	ui.textEdit->insertPlainText(msg.toHex()+"\r\n");
-
-	int TxNum = ui.TxNumLabel->text().toInt();
-	ui.TxNumLabel->setText(QString::number(TxNum + msg.size()));
-	qus.writeDatagram(msg, QHostAddress(getHostAddress()), getPort());
-	
+	dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12 | 0x01 << 8;
+	//dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x06 << 12 | 0x00 << 8;//调试所用
+	dataInfo.dataType = HEURC_dataFormat::dataType_Double;
+	QByteArray msg=covertDataToSend<double,3>(dataInfo, pidData);
+	dataSend(msg);
+	writeToSendArea(msg);
+	updateSendNum(msg.size());
+	writeToPIDRecordTable(pidStringList);	
 }
-void heuRobocon::recv()
+//udp初始化
+void heuRobocon::udpInit()
 {
-	typedef union {
-		struct {
-			double data;
-		};
-		uint8_t u8Data[8];
-	} reciveMsgType;
-	reciveMsgType reciveBuff;
+	clientudp = new QUdpSocket(this);
+	clientudp->bind(1000);//绑定读数据端口(监听端口)，允许其他服务绑定到此端口
+	connect(clientudp, SIGNAL(readyRead()), this, SLOT(udpRecv()));
+}
+//udp接收槽函数
+void heuRobocon::udpRecv()
+{
 	QByteArray data;
-	QDateTime *dataTime = new QDateTime();
-	uint16_t dataId;
-	while (clientudp->hasPendingDatagrams())
-	{
+	while (clientudp->hasPendingDatagrams()){
 		data.resize(clientudp->pendingDatagramSize());
-		clientudp->readDatagram(data.data(), data.size());
-		ui.reciver->moveCursor(QTextCursor::End);
-		ui.reciver->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
-		int RxNum = ui.RxNumLabel->text().toInt();
-		ui.RxNumLabel->setText(QString::number(RxNum+data.size()));
-		//header format:1111 1111 1011 1011
-		//dataID format:0110 aaaa XXXX XXXX (aaaa:mission number;)
-		int format = ui.reciveFormatComboBox->currentIndex();
-		QString strToDisplay;
-		if (format == 1) {
-			for (auto c : data) {
-				strToDisplay.append(char(c));
-			}
-		}
-		else if (format == 0) {
-			strToDisplay=data.toHex();
-		}
-		dataId = data[3]<<8|data[2];
-		if (data[0] != (char)0XBB|| data[1] != (char)0XFF||(dataId&0x6000)!=0x6000) {
-			ui.reciver->setTextColor(QColor(255, 0, 0));		
-			ui.reciver->insertPlainText(strToDisplay + "\r\n");
-			break;
-		}
-		else {
-			ui.reciver->insertPlainText(strToDisplay + "\r\n");
-		}
-		QVector<double> dataBuffer;
-		switch (data[4]) {
-		case HEURC_dataFormat::dataType_Double:
-			dataBuffer=dataConvert<double>(data);
-			break;
-		case HEURC_dataFormat::dataType_Float:
-			dataBuffer=dataConvert<float>(data);
-			break;
-		case HEURC_dataFormat::dataType_Int:
-			dataBuffer=dataConvert<int>(data);
-			break;
-		case HEURC_dataFormat::dataType_Char:
-			dataBuffer=dataConvert<char>(data);
-			break;
-		}
-		switch ((dataId & 0x0f00) >> 8) {
-		case  0x00:
-			dataStore(dataBuffer, dataId&0xff, data[6]);//传递数据
-			break;
-		case 0x01:
-			ui.pidNum->setValue((int)(dataId & 0xFF));
-			emit sendPID(dataBuffer);//回传PID
-			break;
-		case 0x02:
-			emit controlStartPaint();
-		}
-
+		clientudp->readDatagram(data.data(), data.size());	
+		dataRecv(data);
 	}	
-}
-template <typename T>
-	QVector<double> heuRobocon::dataConvert(const QByteArray data)
-{
-	uint16_t dataNum= data[6];
-	uint16_t dataId = data[3] << 8 | data[2];
-	QVector<double> dataBuffer;
-	typedef union {
-		struct {
-			T data;
-		};
-		uint8_t u8Data[8];
-	} reciveMsgType;
-	reciveMsgType reciveBuff;
-	for (int i = 0; i <= dataNum - 1; i++) {
-		for (int j = 0; j < 8; j++) {
-			reciveBuff.u8Data[j] = data[uint(8 + i * sizeof(T) + j)];
-		}
-		dataBuffer.append((double)reciveBuff.data);
-	}
-	return dataBuffer;
 }
 void heuRobocon::dataStore(QVector<double> dataBuffer, quint16 idStart, quint16 num)
 {
@@ -304,15 +270,11 @@ void heuRobocon::dataStore(QVector<double> dataBuffer, quint16 idStart, quint16 
 }
 void heuRobocon::on_generalSend_clicked()
 {
-	QByteArray msg;
 	QUdpSocket qus;
 	QString input= ui.sender->text();
-	QDateTime *dataTime = new QDateTime();
-
-	ui.textEdit->moveCursor(QTextCursor::End);
-	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
+	QByteArray msg;
 	int format = ui.sendFormatComboBox->currentIndex();
-	if (format == 0){
+	if (format == 0) {
 		int n = input.length() / 2;
 		for (int i = 0; i < n; i++) {
 			QString temp;
@@ -330,13 +292,9 @@ void heuRobocon::on_generalSend_clicked()
 	else if (format == 1) {
 		msg = input.toUtf8();
 	}
-	QString temp = msg.toHex();
-	ui.textEdit->insertPlainText(temp+'\r\n');
-
-	int TxNum = ui.TxNumLabel->text().toInt();
-	ui.TxNumLabel->setText(QString::number(TxNum + msg.size()));
-
-	qus.writeDatagram(msg, QHostAddress(getHostAddress()), getPort());	
+	dataSend(msg);
+	writeToSendArea(msg);
+	updateSendNum(msg.size());
 }
 void heuRobocon::on_readPIDButton_clicked()
 {
@@ -349,7 +307,6 @@ void heuRobocon::on_readPIDButton_clicked()
 	sendType sendData;
 	QUdpSocket qus;
 	QByteArray msg;
-	QDateTime *dataTime = new QDateTime();
 	//header format:1111 1111 1011 1011
 	sendData.dataInfo.header = 0XFFBB;
 
@@ -357,31 +314,17 @@ void heuRobocon::on_readPIDButton_clicked()
 	//dataID format:1001 0000 XXXX XXXX
 	sendData.dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12;
 	sendData.dataInfo.dataNum = 0x0000;
+	sendData.dataInfo.dataType = HEURC_dataFormat::noData;
 	msg.append(sendData.u8Data[0]);
 	for (int i = 0; i < sizeof(HEURC_dataFormat::dataInfoDef); i++) {
 		msg[i] = sendData.u8Data[i];
 	}
-
-	int TxNum = ui.TxNumLabel->text().toInt();
-	ui.TxNumLabel->setText(QString::number(TxNum + msg.size()));
-
-	qus.writeDatagram(msg, QHostAddress(getHostAddress()), getPort());
-
-	ui.pidNum->setReadOnly(true);
-	ui.Kp->setReadOnly(true);
-	ui.Ki->setReadOnly(true);
-	ui.Kd->setReadOnly(true);
-	ui.textEdit->moveCursor(QTextCursor::End);
-	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
-	QString temp = msg.toHex();
-	ui.textEdit->insertPlainText(temp + '\r\n');
+	dataSend(msg);
+	writeToSendArea(msg);
+	updateSendNum(msg.size());
 }
 void heuRobocon::changePID(QVector<double> pidData)
 {
-	ui.pidNum->setReadOnly(false);
-	ui.Kp->setReadOnly(false);
-	ui.Ki->setReadOnly(false);
-	ui.Kd->setReadOnly(false);
 	ui.Kp->setText(QString::number(pidData[0], 'g', 10));
 	ui.Ki->setText(QString::number(pidData[1], 'g', 10));
 	ui.Kd->setText(QString::number(pidData[2], 'g', 10));
@@ -676,7 +619,7 @@ QVector<double> heuRobocon::searchForInitData(QVector<quint16> dataID, QVector<q
 }
 void heuRobocon::on_addTargetLineButton_clicked()
 {
-	QString idLineEditaText = ui.taragetLIneEdit->text();
+	QString idLineEditaText = ui.dataIDLineEdit->text();
 	QStringList splitStringList = idLineEditaText.split(";");
 	for (auto str : splitStringList)
 	{
@@ -753,7 +696,7 @@ void heuRobocon::on_targetButton_clicked()
 			msg = covertDataToSend<char, 1>(dataInfo, &data);
 			break;
 	}
-	qus.writeDatagram(msg, QHostAddress(getHostAddress()), getPort());
+	dataSend(msg);
 
 	quint16 targetId =quint16( ui.targetNumSpinBox->text().toInt());
 	targetLinInit[targetId + 0x80] = data;
@@ -761,13 +704,8 @@ void heuRobocon::on_targetButton_clicked()
 	tempData->append(data);
 	dataStore(*tempData, targetId+0x80, 1);
 	delete tempData;
-	int TxNum = ui.TxNumLabel->text().toInt();
-	ui.TxNumLabel->setText(QString::number(TxNum + msg.size()));
-
-	ui.textEdit->moveCursor(QTextCursor::End);
-	ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss   "));
-	QString temp = msg.toHex();
-	ui.textEdit->insertPlainText(temp + '\r\n');
+	updateSendNum(msg.size());
+	writeToSendArea(msg);
 }
 template<typename T,quint16 num>
 QByteArray heuRobocon::covertDataToSend(HEURC_dataFormat::dataInfoDef dataInfo,double data[num])
@@ -792,4 +730,143 @@ QByteArray heuRobocon::covertDataToSend(HEURC_dataFormat::dataInfoDef dataInfo,d
 		msg[i] = sendData.u8Data[i];
 	}
 	return msg;
+}
+void heuRobocon::on_illustratePDFLinkButton_clicked()
+{
+	QString path = "./illustrate.pdf";
+	bool ok=QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+	if (ok == false) {
+		QMessageBox::information(NULL,"error","Failed to find the illustrate.pdf");
+	}
+}
+//检验接收到的数据是否符合通信协议
+bool heuRobocon::checkReciveData(const QByteArray data, quint16 dataId)
+{
+	if (data[0] != (char)0XBB || data[1] != (char)0XFF || (dataId & 0x6000) != 0x6000) {
+		
+		return false;
+	}
+	else {
+		return true;
+	}
+	return true;//防止编译器报错
+}
+//写入接收区
+void heuRobocon::writeToRecvieArea(const QByteArray data,bool ifAccordantRule)
+{
+	if (ui.allowDisplayRecRadioButton->isChecked()) {
+		QDateTime *dataTime = new QDateTime();
+		ui.reciver->moveCursor(QTextCursor::End);
+		ui.reciver->setTextColor(QColor(238, 58, 140));
+		ui.reciver->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss\r\n"));
+		QString strToDisplay;
+		int format = ui.reciveFormatComboBox->currentIndex();
+		if (format == 1) {//字符串格式
+			for (auto c : data) {
+				strToDisplay.append(char(c));
+			}
+		}
+		else if (format == 0) {//十六进制数模式
+			strToDisplay = data.toHex(2);
+		}
+		if (ifAccordantRule == false) {//不符合协议数据标红
+			ui.reciver->setTextColor(QColor(255, 0, 0));
+		}
+		else {
+			ui.reciver->setTextColor(QColor(72, 118, 255));
+		}
+		ui.reciver->insertPlainText(strToDisplay + "\r\n");
+		ui.reciver->moveCursor(QTextCursor::End);
+	}
+}
+//写入发送区
+void heuRobocon::writeToSendArea(const QByteArray data)
+{
+	if (ui.allowDisplaySendRadioButton->isChecked()) {
+		ui.textEdit->moveCursor(QTextCursor::End);
+		QDateTime *dataTime = new QDateTime();
+		ui.textEdit->insertPlainText(dataTime->currentDateTime().toString("yy-MM-dd HH:mm:ss\r\n"));
+		ui.textEdit->insertPlainText(data.toHex() + "\r\n");
+		ui.textEdit->moveCursor(QTextCursor::End);
+	}
+}
+//写入数据记录表格
+void heuRobocon::writeToPIDRecordTable(const QStringList pidStringList)
+{
+	QTableWidgetItem *kpItem = new QTableWidgetItem(),
+		*kiItem = new QTableWidgetItem(),
+		*kdItem = new QTableWidgetItem(),
+		*pidIDItem = new QTableWidgetItem();
+	if (currentRow + 1 > ui.pidRecordTable->rowCount()) {
+		ui.pidRecordTable->setRowCount(currentRow + 1);
+	}
+	ui.pidRecordTable->setCurrentCell(currentRow, 1);
+	pidIDItem->setText(pidStringList[0]);
+	kpItem->setText(pidStringList[1]);
+	kiItem->setText(pidStringList[2]);
+	kdItem->setText(pidStringList[3]);
+	ui.pidRecordTable->setItem(currentRow, 0, pidIDItem);
+	ui.pidRecordTable->setItem(currentRow, 1, kpItem);
+	ui.pidRecordTable->setItem(currentRow, 2, kiItem);
+	ui.pidRecordTable->setItem(currentRow, 3, kdItem);
+	currentRow++;
+}
+void heuRobocon::updateReciveNum(int dataSize)
+{
+	int RxNum = ui.RxNumLabel->text().toInt();
+	ui.RxNumLabel->setText(QString::number(RxNum + dataSize));
+}
+void heuRobocon::updateSendNum(int dataSize)
+{
+	int TxNum = ui.TxNumLabel->text().toInt();
+	ui.TxNumLabel->setText(QString::number(TxNum + dataSize));
+}
+//蓝牙部分，测试失败，暂时保留
+void heuRobocon::on_startBluetoothButton_clicked()
+{	
+	discoveryAgent->start();
+}
+void heuRobocon::addBlueToothDevicesToList(QBluetoothDeviceInfo info)
+{
+	QString label = QString("%1 %2").arg(info.address().toString()).arg(info.name());
+	//%1为蓝牙设备的地址，%2为蓝牙设备的名字
+	QList<QListWidgetItem *> items = ui.blueToothListWidget->findItems(label, Qt::MatchExactly);
+
+	if (items.empty()) {
+		QListWidgetItem *item = new QListWidgetItem(label);
+		QBluetoothLocalDevice::Pairing pairingStatus = localDevice->pairingStatus(info.address());
+
+		/* 蓝牙状态pairingStatus，Pairing枚举类型 0:Unpaired没配对 1:Paired配对但没授权 2:AuthorizedPaired配对且授权 */
+		if (pairingStatus == QBluetoothLocalDevice::Paired || pairingStatus == QBluetoothLocalDevice::AuthorizedPaired)
+			item->setTextColor(QColor(Qt::green));
+		else
+			item->setTextColor(QColor(Qt::black));
+
+		//输出显示
+		ui.blueToothListWidget->addItem(item);
+	}
+}
+void heuRobocon::on_connectBlueToothButton_clicked()
+{
+	QListWidgetItem *item=ui.blueToothListWidget->currentItem();
+	if (item != nullptr){
+		QString text = item->text();
+		int index = text.indexOf(' ');//到空格之前的字节大小
+		if (index == -1)
+			return;
+		QBluetoothAddress address(text.left(index));//返回一个子字符串，该子字符串包含字符串最左边的n个字符。
+		QString name(text.mid(index + 1));//返回一个字符串，该字符串包含从指定的位置索引开始的n个字符。右边
+		QMessageBox::information(this, tr("Info"), tr("The device is connecting..."));//弹出提示框
+		const QLatin1String serviceUuid("00001101-0000-1000-8000-00805F9B34FB");
+		socket->connectToService(address, QBluetoothUuid(serviceUuid), QIODevice::ReadWrite);//建立连接
+		QByteArray arrayData;
+		arrayData .append(10);
+		socket->write(arrayData);
+	}
+	
+
+}
+void heuRobocon::bluetoothConnectedEvent()
+{
+	QMessageBox::information(this, tr("Info"), tr("The device is connected."));//弹出提示框
 }

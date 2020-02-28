@@ -8,12 +8,28 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./dataFormat.h \
+    ./resource1.h \
+    ./resource2.h \
+    ./resource3.h \
+    ./myLineSries.h \
     ./resource.h \
-    ./passWin.h \
-    ./heuRobocon.h
-SOURCES += ./heuRobocon.cpp \
+    ./heuRobocon.h \
+    ./painter.h \
+    ./excelThread.h \
+    ./excelRecordManger.h \
+    ./saveTableDialog.h \
+    ./passWin.h
+SOURCES += ./excelRecordManger.cpp \
+    ./excelThread.cpp \
+    ./heuRobocon.cpp \
     ./main.cpp \
-    ./passWin.cpp
+    ./myLineSries.cpp \
+    ./painter.cpp \
+    ./passWin.cpp \
+    ./saveTableDialog.cpp
 FORMS += ./passWin.ui \
-    ./heuRobocon.ui
+    ./excelRecordManger.ui \
+    ./heuRobocon.ui \
+    ./painter.ui \
+    ./saveTableDialog.ui
 RESOURCES += heuRobocon.qrc

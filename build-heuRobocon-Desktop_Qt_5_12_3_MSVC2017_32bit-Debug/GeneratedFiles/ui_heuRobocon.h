@@ -12,9 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QCommandLinkButton>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
@@ -24,7 +22,6 @@
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
@@ -47,10 +44,10 @@ public:
     QGroupBox *baseReciveGroup;
     QVBoxLayout *verticalLayout_10;
     QHBoxLayout *horizontalLayout_7;
-    QSpacerItem *horizontalSpacer_3;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_9;
     QComboBox *reciveFormatComboBox;
+    QSpacerItem *horizontalSpacer_3;
     QTextEdit *reciver;
     QHBoxLayout *horizontalLayout_12;
     QPushButton *pushButton_2;
@@ -121,72 +118,39 @@ public:
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_13;
     QHBoxLayout *horizontalLayout_9;
-    QVBoxLayout *verticalLayout_4;
     QLineEdit *dataIDLineEdit;
-    QLabel *label_7;
-    QVBoxLayout *verticalLayout_2;
     QPushButton *dataIDButton;
+    QHBoxLayout *horizontalLayout_17;
+    QLineEdit *taragetLIneEdit;
     QPushButton *addTargetLineButton;
     QListWidget *selectedList;
     QHBoxLayout *horizontalLayout_11;
     QPushButton *selectAllButton;
     QPushButton *deleteSelected0Button;
     QSpacerItem *horizontalSpacer_8;
-    QWidget *tab;
-    QGridLayout *gridLayout_6;
-    QGroupBox *groupBox_6;
-    QGridLayout *gridLayout_7;
-    QLineEdit *port;
+    QHBoxLayout *horizontalLayout_3;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *label_11;
+    QSpacerItem *horizontalSpacer_5;
     QLabel *label_4;
-    QHBoxLayout *horizontalLayout_13;
     QLineEdit *ip1;
     QLineEdit *ip2;
     QLineEdit *ip3;
     QLineEdit *ip4;
     QLabel *label_5;
-    QSpacerItem *horizontalSpacer_4;
-    QHBoxLayout *horizontalLayout_14;
-    QGroupBox *groupBox_2;
-    QHBoxLayout *horizontalLayout_5;
-    QListWidget *blueToothListWidget;
-    QVBoxLayout *verticalLayout_6;
-    QPushButton *startBluetoothButton;
-    QPushButton *connectBlueToothButton;
-    QPushButton *endBlueToothButton;
-    QGroupBox *groupBox_9;
-    QHBoxLayout *horizontalLayout_18;
-    QCheckBox *allowDisplayRecRadioButton;
-    QCheckBox *allowDisplaySendRadioButton;
-    QGroupBox *groupBox_8;
-    QHBoxLayout *horizontalLayout_17;
-    QRadioButton *udpChooseRadioButton;
-    QRadioButton *blueToothChooseRadioButton;
-    QRadioButton *serviealChooseRadioButton;
-    QGroupBox *groupBox_7;
-    QHBoxLayout *horizontalLayout_16;
-    QComboBox *comComboBox;
-    QPushButton *searchForSeriealButton;
-    QPushButton *connectServiealButton;
-    QSpacerItem *horizontalSpacer_10;
-    QVBoxLayout *verticalLayout_7;
-    QSpacerItem *verticalSpacer_2;
-    QCommandLinkButton *illustratePDFLinkButton;
-    QHBoxLayout *horizontalLayout_4;
-    QGridLayout *gridLayout_5;
-    QPushButton *clearTxRxButton;
-    QHBoxLayout *horizontalLayout_3;
+    QLineEdit *port;
     QLabel *TxTextLabel;
     QLabel *TxNumLabel;
     QLabel *RxTextLabel;
     QLabel *RxNumLabel;
-    QSpacerItem *horizontalSpacer_9;
+    QPushButton *clearTxRxButton;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *heuRoboconClass)
     {
         if (heuRoboconClass->objectName().isEmpty())
             heuRoboconClass->setObjectName(QString::fromUtf8("heuRoboconClass"));
-        heuRoboconClass->resize(1005, 654);
+        heuRoboconClass->resize(1005, 612);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/heuRobocon/logo.ico"), QSize(), QIcon::Normal, QIcon::Off);
         heuRoboconClass->setWindowIcon(icon);
@@ -198,9 +162,6 @@ public:
         verticalLayout_19->setObjectName(QString::fromUtf8("verticalLayout_19"));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        QFont font;
-        font.setPointSize(9);
-        tabWidget->setFont(font);
         tabWidget->setTabPosition(QTabWidget::North);
         tabWidget->setTabShape(QTabWidget::Rounded);
         tabWidget->setElideMode(Qt::ElideLeft);
@@ -219,10 +180,6 @@ public:
         horizontalLayout_7 = new QHBoxLayout();
         horizontalLayout_7->setSpacing(6);
         horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_7->addItem(horizontalSpacer_3);
-
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
@@ -241,12 +198,15 @@ public:
 
         horizontalLayout_7->addLayout(verticalLayout_3);
 
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_7->addItem(horizontalSpacer_3);
+
 
         verticalLayout_10->addLayout(horizontalLayout_7);
 
         reciver = new QTextEdit(baseReciveGroup);
         reciver->setObjectName(QString::fromUtf8("reciver"));
-        reciver->setEnabled(true);
         reciver->setMinimumSize(QSize(0, 0));
 
         verticalLayout_10->addWidget(reciver);
@@ -461,10 +421,10 @@ public:
             pidRecordTable->setColumnCount(7);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         pidRecordTable->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QFont font1;
-        font1.setKerning(true);
+        QFont font;
+        font.setKerning(true);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        __qtablewidgetitem1->setFont(font1);
+        __qtablewidgetitem1->setFont(font);
         __qtablewidgetitem1->setBackground(QColor(0, 0, 0));
         pidRecordTable->setHorizontalHeaderItem(1, __qtablewidgetitem1);
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
@@ -637,43 +597,34 @@ public:
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setSpacing(6);
         horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
-        verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setSpacing(6);
-        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
         dataIDLineEdit = new QLineEdit(groupBox_3);
         dataIDLineEdit->setObjectName(QString::fromUtf8("dataIDLineEdit"));
 
-        verticalLayout_4->addWidget(dataIDLineEdit);
+        horizontalLayout_9->addWidget(dataIDLineEdit);
 
-        label_7 = new QLabel(groupBox_3);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-        QFont font2;
-        font2.setPointSize(7);
-        label_7->setFont(font2);
-
-        verticalLayout_4->addWidget(label_7);
-
-
-        horizontalLayout_9->addLayout(verticalLayout_4);
-
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         dataIDButton = new QPushButton(groupBox_3);
         dataIDButton->setObjectName(QString::fromUtf8("dataIDButton"));
 
-        verticalLayout_2->addWidget(dataIDButton);
+        horizontalLayout_9->addWidget(dataIDButton);
+
+
+        verticalLayout_13->addLayout(horizontalLayout_9);
+
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setSpacing(6);
+        horizontalLayout_17->setObjectName(QString::fromUtf8("horizontalLayout_17"));
+        taragetLIneEdit = new QLineEdit(groupBox_3);
+        taragetLIneEdit->setObjectName(QString::fromUtf8("taragetLIneEdit"));
+
+        horizontalLayout_17->addWidget(taragetLIneEdit);
 
         addTargetLineButton = new QPushButton(groupBox_3);
         addTargetLineButton->setObjectName(QString::fromUtf8("addTargetLineButton"));
 
-        verticalLayout_2->addWidget(addTargetLineButton);
+        horizontalLayout_17->addWidget(addTargetLineButton);
 
 
-        horizontalLayout_9->addLayout(verticalLayout_2);
-
-
-        verticalLayout_13->addLayout(horizontalLayout_9);
+        verticalLayout_13->addLayout(horizontalLayout_17);
 
         selectedList = new QListWidget(groupBox_3);
         selectedList->setObjectName(QString::fromUtf8("selectedList"));
@@ -704,224 +655,71 @@ public:
         gridLayout_3->addWidget(groupBox_3, 0, 1, 1, 1);
 
         tabWidget->addTab(painterTab, QString());
-        tab = new QWidget();
-        tab->setObjectName(QString::fromUtf8("tab"));
-        gridLayout_6 = new QGridLayout(tab);
-        gridLayout_6->setSpacing(6);
-        gridLayout_6->setContentsMargins(11, 11, 11, 11);
-        gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
-        groupBox_6 = new QGroupBox(tab);
-        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
-        gridLayout_7 = new QGridLayout(groupBox_6);
-        gridLayout_7->setSpacing(6);
-        gridLayout_7->setContentsMargins(11, 11, 11, 11);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
-        port = new QLineEdit(groupBox_6);
-        port->setObjectName(QString::fromUtf8("port"));
-        port->setMaximumSize(QSize(80, 16777215));
-
-        gridLayout_7->addWidget(port, 1, 1, 1, 1);
-
-        label_4 = new QLabel(groupBox_6);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-
-        gridLayout_7->addWidget(label_4, 0, 0, 1, 1);
-
-        horizontalLayout_13 = new QHBoxLayout();
-        horizontalLayout_13->setSpacing(6);
-        horizontalLayout_13->setObjectName(QString::fromUtf8("horizontalLayout_13"));
-        ip1 = new QLineEdit(groupBox_6);
-        ip1->setObjectName(QString::fromUtf8("ip1"));
-        ip1->setMaximumSize(QSize(30, 16777215));
-        ip1->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_13->addWidget(ip1);
-
-        ip2 = new QLineEdit(groupBox_6);
-        ip2->setObjectName(QString::fromUtf8("ip2"));
-        ip2->setMaximumSize(QSize(30, 16777215));
-        ip2->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_13->addWidget(ip2);
-
-        ip3 = new QLineEdit(groupBox_6);
-        ip3->setObjectName(QString::fromUtf8("ip3"));
-        ip3->setMaximumSize(QSize(30, 16777215));
-        ip3->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_13->addWidget(ip3);
-
-        ip4 = new QLineEdit(groupBox_6);
-        ip4->setObjectName(QString::fromUtf8("ip4"));
-        ip4->setMaximumSize(QSize(30, 16777215));
-        ip4->setAlignment(Qt::AlignCenter);
-
-        horizontalLayout_13->addWidget(ip4);
-
-
-        gridLayout_7->addLayout(horizontalLayout_13, 1, 0, 1, 1);
-
-        label_5 = new QLabel(groupBox_6);
-        label_5->setObjectName(QString::fromUtf8("label_5"));
-
-        gridLayout_7->addWidget(label_5, 0, 1, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_7->addItem(horizontalSpacer_4, 1, 2, 1, 1);
-
-
-        gridLayout_6->addWidget(groupBox_6, 1, 0, 1, 1);
-
-        horizontalLayout_14 = new QHBoxLayout();
-        horizontalLayout_14->setSpacing(6);
-        horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
-
-        gridLayout_6->addLayout(horizontalLayout_14, 3, 2, 1, 1);
-
-        groupBox_2 = new QGroupBox(tab);
-        groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        horizontalLayout_5 = new QHBoxLayout(groupBox_2);
-        horizontalLayout_5->setSpacing(6);
-        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
-        blueToothListWidget = new QListWidget(groupBox_2);
-        blueToothListWidget->setObjectName(QString::fromUtf8("blueToothListWidget"));
-
-        horizontalLayout_5->addWidget(blueToothListWidget);
-
-        verticalLayout_6 = new QVBoxLayout();
-        verticalLayout_6->setSpacing(6);
-        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
-        startBluetoothButton = new QPushButton(groupBox_2);
-        startBluetoothButton->setObjectName(QString::fromUtf8("startBluetoothButton"));
-
-        verticalLayout_6->addWidget(startBluetoothButton);
-
-        connectBlueToothButton = new QPushButton(groupBox_2);
-        connectBlueToothButton->setObjectName(QString::fromUtf8("connectBlueToothButton"));
-
-        verticalLayout_6->addWidget(connectBlueToothButton);
-
-        endBlueToothButton = new QPushButton(groupBox_2);
-        endBlueToothButton->setObjectName(QString::fromUtf8("endBlueToothButton"));
-
-        verticalLayout_6->addWidget(endBlueToothButton);
-
-
-        horizontalLayout_5->addLayout(verticalLayout_6);
-
-
-        gridLayout_6->addWidget(groupBox_2, 2, 0, 1, 1);
-
-        groupBox_9 = new QGroupBox(tab);
-        groupBox_9->setObjectName(QString::fromUtf8("groupBox_9"));
-        horizontalLayout_18 = new QHBoxLayout(groupBox_9);
-        horizontalLayout_18->setSpacing(6);
-        horizontalLayout_18->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_18->setObjectName(QString::fromUtf8("horizontalLayout_18"));
-        allowDisplayRecRadioButton = new QCheckBox(groupBox_9);
-        allowDisplayRecRadioButton->setObjectName(QString::fromUtf8("allowDisplayRecRadioButton"));
-        allowDisplayRecRadioButton->setChecked(true);
-
-        horizontalLayout_18->addWidget(allowDisplayRecRadioButton);
-
-        allowDisplaySendRadioButton = new QCheckBox(groupBox_9);
-        allowDisplaySendRadioButton->setObjectName(QString::fromUtf8("allowDisplaySendRadioButton"));
-        allowDisplaySendRadioButton->setChecked(true);
-
-        horizontalLayout_18->addWidget(allowDisplaySendRadioButton);
-
-
-        gridLayout_6->addWidget(groupBox_9, 0, 2, 1, 1);
-
-        groupBox_8 = new QGroupBox(tab);
-        groupBox_8->setObjectName(QString::fromUtf8("groupBox_8"));
-        horizontalLayout_17 = new QHBoxLayout(groupBox_8);
-        horizontalLayout_17->setSpacing(6);
-        horizontalLayout_17->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_17->setObjectName(QString::fromUtf8("horizontalLayout_17"));
-        udpChooseRadioButton = new QRadioButton(groupBox_8);
-        udpChooseRadioButton->setObjectName(QString::fromUtf8("udpChooseRadioButton"));
-        udpChooseRadioButton->setChecked(true);
-
-        horizontalLayout_17->addWidget(udpChooseRadioButton);
-
-        blueToothChooseRadioButton = new QRadioButton(groupBox_8);
-        blueToothChooseRadioButton->setObjectName(QString::fromUtf8("blueToothChooseRadioButton"));
-        blueToothChooseRadioButton->setChecked(false);
-
-        horizontalLayout_17->addWidget(blueToothChooseRadioButton);
-
-        serviealChooseRadioButton = new QRadioButton(groupBox_8);
-        serviealChooseRadioButton->setObjectName(QString::fromUtf8("serviealChooseRadioButton"));
-
-        horizontalLayout_17->addWidget(serviealChooseRadioButton);
-
-
-        gridLayout_6->addWidget(groupBox_8, 0, 0, 1, 1);
-
-        groupBox_7 = new QGroupBox(tab);
-        groupBox_7->setObjectName(QString::fromUtf8("groupBox_7"));
-        horizontalLayout_16 = new QHBoxLayout(groupBox_7);
-        horizontalLayout_16->setSpacing(6);
-        horizontalLayout_16->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_16->setObjectName(QString::fromUtf8("horizontalLayout_16"));
-        comComboBox = new QComboBox(groupBox_7);
-        comComboBox->setObjectName(QString::fromUtf8("comComboBox"));
-
-        horizontalLayout_16->addWidget(comComboBox);
-
-        searchForSeriealButton = new QPushButton(groupBox_7);
-        searchForSeriealButton->setObjectName(QString::fromUtf8("searchForSeriealButton"));
-
-        horizontalLayout_16->addWidget(searchForSeriealButton);
-
-        connectServiealButton = new QPushButton(groupBox_7);
-        connectServiealButton->setObjectName(QString::fromUtf8("connectServiealButton"));
-
-        horizontalLayout_16->addWidget(connectServiealButton);
-
-        horizontalSpacer_10 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_16->addItem(horizontalSpacer_10);
-
-
-        gridLayout_6->addWidget(groupBox_7, 1, 2, 1, 1);
-
-        verticalLayout_7 = new QVBoxLayout();
-        verticalLayout_7->setSpacing(6);
-        verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_7->addItem(verticalSpacer_2);
-
-        illustratePDFLinkButton = new QCommandLinkButton(tab);
-        illustratePDFLinkButton->setObjectName(QString::fromUtf8("illustratePDFLinkButton"));
-
-        verticalLayout_7->addWidget(illustratePDFLinkButton);
-
-
-        gridLayout_6->addLayout(verticalLayout_7, 2, 2, 1, 1);
-
-        tabWidget->addTab(tab, QString());
 
         verticalLayout_19->addWidget(tabWidget);
-
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        gridLayout_5 = new QGridLayout();
-        gridLayout_5->setSpacing(6);
-        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
-        clearTxRxButton = new QPushButton(centralWidget);
-        clearTxRxButton->setObjectName(QString::fromUtf8("clearTxRxButton"));
-
-        gridLayout_5->addWidget(clearTxRxButton, 1, 5, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        label_11 = new QLabel(centralWidget);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+
+        horizontalLayout_5->addWidget(label_11);
+
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_5);
+
+        label_4 = new QLabel(centralWidget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        horizontalLayout_5->addWidget(label_4);
+
+        ip1 = new QLineEdit(centralWidget);
+        ip1->setObjectName(QString::fromUtf8("ip1"));
+        ip1->setMaximumSize(QSize(30, 16777215));
+        ip1->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_5->addWidget(ip1);
+
+        ip2 = new QLineEdit(centralWidget);
+        ip2->setObjectName(QString::fromUtf8("ip2"));
+        ip2->setMaximumSize(QSize(30, 16777215));
+        ip2->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_5->addWidget(ip2);
+
+        ip3 = new QLineEdit(centralWidget);
+        ip3->setObjectName(QString::fromUtf8("ip3"));
+        ip3->setMaximumSize(QSize(30, 16777215));
+        ip3->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_5->addWidget(ip3);
+
+        ip4 = new QLineEdit(centralWidget);
+        ip4->setObjectName(QString::fromUtf8("ip4"));
+        ip4->setMaximumSize(QSize(30, 16777215));
+        ip4->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_5->addWidget(ip4);
+
+        label_5 = new QLabel(centralWidget);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        horizontalLayout_5->addWidget(label_5);
+
+        port = new QLineEdit(centralWidget);
+        port->setObjectName(QString::fromUtf8("port"));
+        port->setMaximumSize(QSize(80, 16777215));
+
+        horizontalLayout_5->addWidget(port);
+
+
+        horizontalLayout_3->addLayout(horizontalLayout_5);
+
         TxTextLabel = new QLabel(centralWidget);
         TxTextLabel->setObjectName(QString::fromUtf8("TxTextLabel"));
 
@@ -942,23 +740,23 @@ public:
 
         horizontalLayout_3->addWidget(RxNumLabel);
 
+        clearTxRxButton = new QPushButton(centralWidget);
+        clearTxRxButton->setObjectName(QString::fromUtf8("clearTxRxButton"));
 
-        gridLayout_5->addLayout(horizontalLayout_3, 0, 5, 1, 1);
-
-        horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_5->addItem(horizontalSpacer_9, 1, 1, 1, 1);
+        horizontalLayout_3->addWidget(clearTxRxButton);
 
 
-        horizontalLayout_4->addLayout(gridLayout_5);
-
-
-        verticalLayout_19->addLayout(horizontalLayout_4);
+        verticalLayout_19->addLayout(horizontalLayout_3);
 
         heuRoboconClass->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(heuRoboconClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         heuRoboconClass->setStatusBar(statusBar);
+        QWidget::setTabOrder(ip2, ip3);
+        QWidget::setTabOrder(ip3, ip4);
+        QWidget::setTabOrder(ip4, port);
+        QWidget::setTabOrder(port, clearTxRxButton);
+        QWidget::setTabOrder(clearTxRxButton, reciver);
         QWidget::setTabOrder(reciver, sender);
         QWidget::setTabOrder(sender, textEdit);
         QWidget::setTabOrder(textEdit, pushButton);
@@ -966,7 +764,9 @@ public:
         QWidget::setTabOrder(addRow, deleteRowButton);
         QWidget::setTabOrder(deleteRowButton, clearTableButton);
         QWidget::setTabOrder(clearTableButton, exportPIDTableButton);
-        QWidget::setTabOrder(exportPIDTableButton, selectedList);
+        QWidget::setTabOrder(exportPIDTableButton, dataIDLineEdit);
+        QWidget::setTabOrder(dataIDLineEdit, dataIDButton);
+        QWidget::setTabOrder(dataIDButton, selectedList);
         QWidget::setTabOrder(selectedList, selectAllButton);
         QWidget::setTabOrder(selectAllButton, deleteSelected0Button);
         QWidget::setTabOrder(deleteSelected0Button, add1SelectAllButton);
@@ -982,18 +782,17 @@ public:
         QWidget::setTabOrder(toRcordList, tabWidget);
 
         retranslateUi(heuRoboconClass);
+        QObject::connect(pushButton, SIGNAL(clicked()), textEdit, SLOT(clear()));
+        QObject::connect(clearTableButton, SIGNAL(clicked()), pidRecordTable, SLOT(clearContents()));
+        QObject::connect(selectAllButton, SIGNAL(clicked()), selectedList, SLOT(selectAll()));
         QObject::connect(ip2, SIGNAL(textChanged(QString)), heuRoboconClass, SLOT(on_IP2_changed()));
         QObject::connect(ip1, SIGNAL(textChanged(QString)), heuRoboconClass, SLOT(on_IP1_changed()));
         QObject::connect(ip3, SIGNAL(textChanged(QString)), heuRoboconClass, SLOT(on_IP3_changed()));
         QObject::connect(ip4, SIGNAL(textChanged(QString)), heuRoboconClass, SLOT(on_IP4_changed()));
-        QObject::connect(pushButton_2, SIGNAL(clicked()), reciver, SLOT(clear()));
-        QObject::connect(clearTableButton, SIGNAL(clicked()), pidRecordTable, SLOT(clearContents()));
         QObject::connect(send, SIGNAL(clicked()), heuRoboconClass, SLOT(on_sendButton_clicked()));
         QObject::connect(add1SelectAllButton, SIGNAL(clicked()), toPaintList, SLOT(selectAll()));
-        QObject::connect(pushButton, SIGNAL(clicked()), textEdit, SLOT(clear()));
-        QObject::connect(selectAllButton, SIGNAL(clicked()), selectedList, SLOT(selectAll()));
         QObject::connect(allAddRecordButton, SIGNAL(clicked()), toRcordList, SLOT(selectAll()));
-        QObject::connect(allowDisplayRecRadioButton, SIGNAL(clicked(bool)), reciver, SLOT(setEnabled(bool)));
+        QObject::connect(pushButton_2, SIGNAL(clicked()), reciver, SLOT(clear()));
 
         tabWidget->setCurrentIndex(0);
 
@@ -1078,41 +877,24 @@ public:
         startRecordButton->setText(QApplication::translate("heuRoboconClass", "\345\274\200\345\247\213\350\256\260\345\275\225", nullptr));
         addRecordButton->setText(QApplication::translate("heuRoboconClass", "\345\212\240\345\205\245>>", nullptr));
         groupBox_3->setTitle(QApplication::translate("heuRoboconClass", "\345\275\223\345\211\215\346\225\260\346\215\256", nullptr));
-        label_7->setText(QApplication::translate("heuRoboconClass", "\346\263\250\357\274\232\345\244\232\344\270\252\346\225\260\346\215\256\345\217\257\347\224\250\342\200\234;\342\200\235\345\210\206\345\274\200,\350\277\236\347\273\255\346\225\260\346\215\256\345\217\257\347\224\250\":\"\350\241\250\347\244\272\357\274\214\345\246\202\357\274\2321;12;13;4:10", nullptr));
         dataIDButton->setText(QApplication::translate("heuRoboconClass", "\346\267\273\345\212\240\346\225\260\346\215\256ID", nullptr));
         addTargetLineButton->setText(QApplication::translate("heuRoboconClass", "\346\267\273\345\212\240\347\233\256\346\240\207\346\233\262\347\272\277", nullptr));
         selectAllButton->setText(QApplication::translate("heuRoboconClass", "\345\205\250\351\200\211", nullptr));
         deleteSelected0Button->setText(QApplication::translate("heuRoboconClass", "\345\210\240\351\231\244\346\211\200\351\200\211", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(painterTab), QApplication::translate("heuRoboconClass", "\347\224\273\345\233\276\344\270\216\350\256\260\345\275\225", nullptr));
-        groupBox_6->setTitle(QApplication::translate("heuRoboconClass", "UDP\350\277\236\346\216\245", nullptr));
-        port->setText(QApplication::translate("heuRoboconClass", "1000", nullptr));
+        label_11->setText(QApplication::translate("heuRoboconClass", "\345\223\210\345\260\224\346\273\250\345\267\245\347\250\213\345\244\247\345\255\246\347\253\236\346\212\200\346\234\272\345\231\250\344\272\272\351\230\237\350\260\203\350\257\225\344\270\212\344\275\215\346\234\272", nullptr));
         label_4->setText(QApplication::translate("heuRoboconClass", "\345\217\221\351\200\201\345\210\260IP\345\234\260\345\235\200\357\274\232", nullptr));
         ip1->setText(QApplication::translate("heuRoboconClass", "192", nullptr));
         ip2->setText(QApplication::translate("heuRoboconClass", "168", nullptr));
         ip3->setText(QApplication::translate("heuRoboconClass", "2", nullptr));
         ip4->setText(QApplication::translate("heuRoboconClass", "105", nullptr));
         label_5->setText(QApplication::translate("heuRoboconClass", "\347\253\257\345\217\243\345\234\260\345\235\200", nullptr));
-        groupBox_2->setTitle(QApplication::translate("heuRoboconClass", "\350\223\235\347\211\231\350\256\276\345\244\207", nullptr));
-        startBluetoothButton->setText(QApplication::translate("heuRoboconClass", "\346\220\234\347\264\242", nullptr));
-        connectBlueToothButton->setText(QApplication::translate("heuRoboconClass", "\350\277\236\346\216\245", nullptr));
-        endBlueToothButton->setText(QApplication::translate("heuRoboconClass", "\346\226\255\345\274\200", nullptr));
-        groupBox_9->setTitle(QApplication::translate("heuRoboconClass", "\346\230\276\347\244\272\350\256\276\347\275\256", nullptr));
-        allowDisplayRecRadioButton->setText(QApplication::translate("heuRoboconClass", "\345\234\250\346\216\245\346\224\266\345\214\272\346\230\276\347\244\272\346\216\245\346\224\266\345\210\260\347\232\204\346\225\260\346\215\256", nullptr));
-        allowDisplaySendRadioButton->setText(QApplication::translate("heuRoboconClass", "\345\205\201\350\256\270\345\234\250\345\217\221\351\200\201\345\214\272\346\230\276\347\244\272\345\217\221\345\207\272\347\232\204\346\225\260\346\215\256", nullptr));
-        groupBox_8->setTitle(QApplication::translate("heuRoboconClass", "\350\277\236\346\216\245\346\226\271\345\274\217", nullptr));
-        udpChooseRadioButton->setText(QApplication::translate("heuRoboconClass", "UDP", nullptr));
-        blueToothChooseRadioButton->setText(QApplication::translate("heuRoboconClass", "\350\223\235\347\211\231", nullptr));
-        serviealChooseRadioButton->setText(QApplication::translate("heuRoboconClass", "\344\270\262\345\217\243", nullptr));
-        groupBox_7->setTitle(QApplication::translate("heuRoboconClass", "\344\270\262\345\217\243", nullptr));
-        searchForSeriealButton->setText(QApplication::translate("heuRoboconClass", "\346\220\234\347\264\242", nullptr));
-        connectServiealButton->setText(QApplication::translate("heuRoboconClass", "\350\277\236\346\216\245", nullptr));
-        illustratePDFLinkButton->setText(QApplication::translate("heuRoboconClass", "\346\237\245\347\234\213\350\257\264\346\230\216\346\226\207\346\241\243", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("heuRoboconClass", "\350\256\276\347\275\256", nullptr));
-        clearTxRxButton->setText(QApplication::translate("heuRoboconClass", "\346\270\205\351\233\266", nullptr));
+        port->setText(QApplication::translate("heuRoboconClass", "1000", nullptr));
         TxTextLabel->setText(QApplication::translate("heuRoboconClass", "Tx:", nullptr));
         TxNumLabel->setText(QApplication::translate("heuRoboconClass", "0", nullptr));
         RxTextLabel->setText(QApplication::translate("heuRoboconClass", "Rx:", nullptr));
         RxNumLabel->setText(QApplication::translate("heuRoboconClass", "0", nullptr));
+        clearTxRxButton->setText(QApplication::translate("heuRoboconClass", "\346\270\205\351\233\266", nullptr));
     } // retranslateUi
 
 };
