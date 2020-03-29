@@ -39,7 +39,11 @@ heuRobocon::heuRobocon(QWidget *parent)
 	ui.selectedList->setSelectionMode(QAbstractItemView::MultiSelection);
 	m_Timer = new QTimer(this);
 	m_Timer->start(10);
+
 	qRegisterMetaType<QVector<QString>>("QVector<QString>");
+	qRegisterMetaType<QVector<bool>>("QVector<bool>");
+	qRegisterMetaType<QMap<quint16, myRecordInfo*>>("QMap<quint16, myRecordInfo*>");
+
 	ui.pidRecordTable->setColumnWidth(0, 60);
 	ui.pidRecordTable->setColumnWidth(1, 80);
 	ui.pidRecordTable->setColumnWidth(2, 80);
@@ -87,7 +91,8 @@ void heuRobocon::dataRecv(const QByteArray data)
 void heuRobocon::reciveDateDeal(const QByteArray data, const quint16 dataId)
 {
 	QVector<double> dataBuffer;
-	switch (data[4]) {//按照数据格式对数据进行解析
+	quint16 dataType = data[4];
+	switch (dataType) {//按照数据格式对数据进行解析
 	case HEURC_dataFormat::dataType_Double:
 		dataBuffer = dataConvert<double>(data);
 		break;
@@ -104,14 +109,14 @@ void heuRobocon::reciveDateDeal(const QByteArray data, const quint16 dataId)
 		break;
 	}
 	switch ((dataId & 0x0f00) >> 8) {
-	case  0x00:
+	case  0x00://00接收任务，接收发送来的数据量
 		dataStore(dataBuffer, dataId & 0xff, data[6]);//传递数据
 		break;
-	case 0x01:
+	case 0x01://01接收任务，接收发送来的pid回传量
 		ui.pidNum->setValue((int)(dataId & 0xFF));
 		emit sendPID(dataBuffer);//回传PID
 		break;
-	case 0x02:
+	case 0x02://02接收任务，接收发送来的控制指令，命令开始绘图
 		emit controlStartPaint();
 	}
 }
@@ -125,16 +130,38 @@ QVector<double> heuRobocon::dataConvert(const QByteArray data)
 		struct {
 			T data;
 		};
-		uint8_t u8Data[8];
+		uint8_t u8Data[sizeof(T)];
 	} reciveMsgType;
 	reciveMsgType reciveBuff;
 	for (int i = 0; i <= dataNum - 1; i++) {
-		for (int j = 0; j < 8; j++) {
-			reciveBuff.u8Data[j] = data[uint(8 + i * sizeof(T) + j)];
+		for (int j = 0; j < sizeof(T); j++) {
+			reciveBuff.u8Data[j] = data[uint(sizeof(HEURC_dataFormat::dataInfoDef) + i * sizeof(T) + j)];
 		}
 		dataBuffer.append((double)reciveBuff.data);
 	}
 	return dataBuffer;
+}
+void heuRobocon::dataStore(QVector<double> dataBuffer, quint16 idStart, quint16 num)
+{
+	for (quint16 i = 0; i < num; i++) {
+		quint16 dataId = idStart + i;
+		double dataToStore = dataBuffer[i];
+		std::map<quint16, int>::iterator it = dataStorge.find(idStart + i);
+		if (it == dataStorge.end()) {//首次出现ID
+			dataStorge[dataId] = 0;
+			if (dataId < 0x80) {
+				ui.selectedList->addItem("ID:" + QString::number(dataId));
+			}
+			else {
+				ui.selectedList->addItem("targetID:" + QString::number(dataId - 0x80));
+			}
+			ui.selectedList->sortItems();
+		}
+		else {
+		}
+		dataStorge[dataId]++;
+		emit sendData(dataId, dataToStore);//发送数据至画图窗口
+	}
 }
 void heuRobocon::dataSend(const QByteArray data)
 {
@@ -197,6 +224,7 @@ void heuRobocon::on_IP4_changed()
 		ui.port->setFocus();
 	}
 }
+//发送pid(发送0001任务）
 void heuRobocon:: on_sendButton_clicked()
 {
 	autoAbjustPIDRceordTable();
@@ -220,10 +248,25 @@ void heuRobocon:: on_sendButton_clicked()
 	//header format:1111 1111 1011 1011
 	dataInfo.header = 0XFFBB;
 	//dataID format:1001 0001 XXXX XXXX
-	dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12 | 0x01 << 8;
-	//dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x06 << 12 | 0x00 << 8;//调试所用
-	dataInfo.dataType = HEURC_dataFormat::dataType_Double;
-	QByteArray msg=covertDataToSend<double,3>(dataInfo, pidData);
+	//dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x09 << 12 | 0x01 << 8;
+	dataInfo.dataID = (uint16_t)ui.pidNum->text().toInt() | 0x06 << 12 | 0x00 << 8;//调试所用
+	QByteArray msg;
+	if (ui.pidSendFormatComboBox->currentIndex() == 0) {
+		dataInfo.dataType = HEURC_dataFormat::dataType_Double;
+		msg = covertDataToSend<double, 3>(dataInfo, pidData);
+	}
+	else if (ui.pidSendFormatComboBox->currentIndex() == 1) {
+		dataInfo.dataType = HEURC_dataFormat::dataType_Float;
+		msg = covertDataToSend<float, 3>(dataInfo, pidData);
+	}
+	else if (ui.pidSendFormatComboBox->currentIndex() == 2) {
+		dataInfo.dataType = HEURC_dataFormat::dataType_Int;
+		msg = covertDataToSend<int, 3>(dataInfo, pidData);
+	}
+	else if (ui.pidSendFormatComboBox->currentIndex() == 3) {
+		dataInfo.dataType = HEURC_dataFormat::dataType_Char;
+		msg = covertDataToSend<char, 3>(dataInfo, pidData);
+	}
 	dataSend(msg);
 	writeToSendArea(msg);
 	updateSendNum(msg.size());
@@ -246,28 +289,7 @@ void heuRobocon::udpRecv()
 		dataRecv(data);
 	}	
 }
-void heuRobocon::dataStore(QVector<double> dataBuffer, quint16 idStart, quint16 num)
-{
-	for (quint16 i = 0; i < num; i++){	
-		quint16 dataId= idStart + i;
-		double dataToStore = dataBuffer[i];
-		std::map<quint16, int>::iterator it = dataStorge.find(idStart + i);
-		if (it==dataStorge.end()) {//首次出现ID
-			dataStorge[dataId] = 0;
-			if (dataId < 0x80) {
-				ui.selectedList->addItem("ID:" + QString::number(dataId));
-			}
-			else {
-				ui.selectedList->addItem("targetID:" + QString::number(dataId-0x80));
-			}
-			ui.selectedList->sortItems();
-		}
-		else {
-		}
-		dataStorge[dataId]++;
-		emit sendData(dataId, dataToStore);//发送数据至画图窗口
-	}
-}
+
 void heuRobocon::on_generalSend_clicked()
 {
 	QUdpSocket qus;
@@ -548,14 +570,18 @@ void heuRobocon::on_startRecordButton_clicked()
 	connect(newThread, SIGNAL(finished()), excelRecorder, SLOT(deleteLater()));
 	connect(newThread, SIGNAL(started()), excelRecorder, SLOT(startRecordSlot()));  //开启线程槽函数
 	connect(this, SIGNAL(sendData(quint16, double)), excelRecorder, SLOT(addData(quint16, double)));
-	connect(mExcelRecordManger->ui.stopRecordButton, SIGNAL(clicked()), excelRecorder, SLOT(endRecordSlot()));
-	connect(excelRecorder, SIGNAL(quitCurrentThread()), newThread, SLOT(quit()));  //关闭当前进程
+
+	connect(mExcelRecordManger, SIGNAL(endRecordSignal()), excelRecorder, SLOT(endRecordSlot()));
 	connect(excelRecorder, SIGNAL(quitCurrentThread()), mExcelRecordManger, SLOT(close()));  // 关闭窗口
-	connect(mExcelRecordManger, SIGNAL(quitThread()), newThread, SLOT(quit()));
+	connect(mExcelRecordManger, SIGNAL(quitThread()), newThread, SLOT(quit()));//关闭进程
+	
 	connect(excelRecorder, SIGNAL(askForInfo()), mExcelRecordManger, SLOT(getInfo()));
+	
 	connect(excelRecorder, SIGNAL(dataNumChanged()), mExcelRecordManger, SLOT(dataNumUpdata()));
+	
 	connect(mExcelRecordManger, SIGNAL(sendFilePath(QString)), excelRecorder, SLOT(reviveFilePath(QString))); 
-	connect(mExcelRecordManger, SIGNAL(sendDataNameSignals(QStringList)), excelRecorder, SLOT(getDataName(QStringList)));  //关闭当前进程
+	connect(mExcelRecordManger, SIGNAL(sendDataInfo(QMap<quint16, myRecordInfo*>)),
+		       excelRecorder,     SLOT(getDataInfo(QMap<quint16, myRecordInfo*>)));  //关闭当前进程
 	newThread->start();
 	mExcelRecordManger->show();
 	emit excelRecordStarted();
@@ -824,6 +850,7 @@ void heuRobocon::updateSendNum(int dataSize)
 //蓝牙部分，测试失败，暂时保留
 void heuRobocon::on_startBluetoothButton_clicked()
 {	
+//	QProcess *process = new QProcess();
 	discoveryAgent->start();
 }
 void heuRobocon::addBlueToothDevicesToList(QBluetoothDeviceInfo info)

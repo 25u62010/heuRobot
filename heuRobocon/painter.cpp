@@ -275,8 +275,7 @@ void painter::on_selectLIneButton_clicked()
 	else{
 		lineSerie->setLineShowStatus(true);
 		ui.selectLIneButton->setText(QStringLiteral("隐藏"));
-	}
-			
+	}			
 }
 void painter::on_selectLIneComboBox_currentIndexChanged(const QString &text)
 {
@@ -332,10 +331,6 @@ void painter::on_selectLIneComboBox_currentTextChanged(const QString &text)
 	ui.selectLIneComboBox->setItemText(currentIndex,text);
 	lineSeriesVector[currentIndex]->setName(text);
 }
-void painter::on_getProcess_clicked()
-{
-	qDebug() << "从线程ID" << QThread::currentThread();
-}
 void painter::on_showAllButton_clicked()
 {
 	for (auto lineSeries : lineSeriesVector) {
@@ -352,10 +347,7 @@ void painter::on_hideAllButton_clicked()
 }
 void painter::autostart()
 {
-	if (lineSeriesVector.isEmpty() == false) {
-		painterNowStatus = autoAbjustMode;
-		ui.pauseShowButton->setText(QStringLiteral("暂停显示"));
-	}
+	on_pauseShowButton_clicked();
 }
 painter::~painter()
 {

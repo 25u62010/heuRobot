@@ -74,7 +74,6 @@ private slots:
 	void on_selectLIneComboBox_currentTextChanged(const QString &text);
 	void on_showAllButton_clicked();
 	void on_hideAllButton_clicked();
-	void on_getProcess_clicked();
 	void autostart();
 protected:
 	void closeEvent(QCloseEvent *event) {

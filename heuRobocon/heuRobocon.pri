@@ -8,11 +8,8 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./dataFormat.h \
-    ./resource1.h \
-    ./resource2.h \
-    ./resource3.h \
-    ./myLineSries.h \
     ./resource.h \
+    ./myLineSries.h \
     ./heuRobocon.h \
     ./painter.h \
     ./excelThread.h \

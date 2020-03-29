@@ -19,6 +19,7 @@
 #include <qbluetoothdevicediscoveryagent.h>
 #include <QBluetoothLocalDevice>
 #include <QBluetoothSocket.h>
+#include <myRecordInfo.h>
 
 #include <windows.h>  
 #include <BluetoothAPIs.h>  

@@ -5,9 +5,9 @@
 TEMPLATE = app
 TARGET = heuRobocon
 DESTDIR = ../Win32/Release
-QT += core opengl network gui axserver axcontainer help uitools widgets webchannel websockets charts networkauth remoteobjects
+QT += core opengl network gui axserver axcontainer help uitools widgets bluetooth webchannel websockets charts networkauth remoteobjects
 CONFIG += release
-DEFINES += _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 QT_HELP_LIB QT_NETWORK_LIB QT_UITOOLS_LIB QT_WEBCHANNEL_LIB QT_WEBSOCKETS_LIB QT_WIDGETS_LIB QT_REMOTEOBJECTS_LIB QT_NETWORKAUTH_LIB QT_CHARTS_LIB QT_OPENGL_LIB
+DEFINES += _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 QT_HELP_LIB QT_NETWORK_LIB QT_UITOOLS_LIB QT_WEBCHANNEL_LIB QT_WEBSOCKETS_LIB QT_WIDGETS_LIB QT_REMOTEOBJECTS_LIB QT_NETWORKAUTH_LIB QT_CHARTS_LIB QT_OPENGL_LIB QT_BLUETOOTH_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
     ./GeneratedFiles/$(ConfigurationName)

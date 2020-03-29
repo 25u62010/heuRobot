@@ -33,7 +33,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideLeft</enum>
@@ -220,14 +220,14 @@
              <string>PID修改</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
+             <item row="0" column="1">
               <widget class="QLabel" name="label_6">
                <property name="text">
                 <string>pid编号</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="1" column="3">
               <widget class="QLineEdit" name="Kp">
                <property name="maximumSize">
                 <size>
@@ -240,54 +240,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="4">
-              <widget class="QPushButton" name="readPIDButton">
-               <property name="text">
-                <string>读取pid</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QPushButton" name="send">
-               <property name="text">
-                <string>修改pid</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QSpinBox" name="pidNum"/>
-             </item>
-             <item row="0" column="3">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Kd</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QLineEdit" name="Ki">
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Kp</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
+             <item row="0" column="4">
               <widget class="QLabel" name="label_2">
                <property name="text">
                 <string>Ki</string>
@@ -297,13 +250,94 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="3">
+             <item row="1" column="5">
               <widget class="QLineEdit" name="Kd">
                <property name="maximumSize">
                 <size>
                  <width>100</width>
                  <height>16777215</height>
                 </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Kp</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Kd</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QComboBox" name="pidSendFormatComboBox">
+               <item>
+                <property name="text">
+                 <string>double</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>float</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>int</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>char</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="pidNum"/>
+             </item>
+             <item row="1" column="4">
+              <widget class="QLineEdit" name="Ki">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>发送类型</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="7">
+              <widget class="QPushButton" name="send">
+               <property name="text">
+                <string>修改</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="8">
+              <widget class="QPushButton" name="readPIDButton">
+               <property name="text">
+                <string>读取</string>
                </property>
               </widget>
              </item>
@@ -316,32 +350,18 @@
              <string>发送目标值</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>数据id</string>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="targetEdit">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
               <widget class="QSpinBox" name="targetNumSpinBox"/>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>数据类型</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignHCenter|Qt::AlignTop</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="QPushButton" name="targetButton">
-               <property name="text">
-                <string>发送</string>
-               </property>
-              </widget>
              </item>
              <item row="1" column="1">
               <widget class="QComboBox" name="targetFormatComboBox">
@@ -367,13 +387,27 @@
                </item>
               </widget>
              </item>
-             <item row="1" column="2">
-              <widget class="QLineEdit" name="targetEdit">
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>数据id</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>数据类型</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignHCenter|Qt::AlignTop</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QPushButton" name="targetButton">
+               <property name="text">
+                <string>发送</string>
                </property>
               </widget>
              </item>
@@ -671,36 +705,40 @@
             </layout>
            </item>
            <item>
-            <widget class="QListWidget" name="selectedList"/>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <layout class="QHBoxLayout" name="horizontalLayout_16">
              <item>
-              <widget class="QPushButton" name="selectAllButton">
-               <property name="text">
-                <string>全选</string>
-               </property>
-              </widget>
+              <widget class="QListWidget" name="selectedList"/>
              </item>
              <item>
-              <widget class="QPushButton" name="deleteSelected0Button">
-               <property name="text">
-                <string>删除所选</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <widget class="QPushButton" name="selectAllButton">
+                 <property name="text">
+                  <string>全选</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="deleteSelected0Button">
+                 <property name="text">
+                  <string>删除所选</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -730,6 +768,9 @@
              </property>
              <property name="text">
               <string>1000</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -813,6 +854,9 @@
              <property name="text">
               <string>端口地址</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
             </widget>
            </item>
            <item row="1" column="2">
@@ -890,7 +934,7 @@
            <item>
             <widget class="QCheckBox" name="allowDisplaySendRadioButton">
              <property name="text">
-              <string>允许在发送区显示发出的数据</string>
+              <string>在发送区显示发出的数据</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -941,25 +985,18 @@
           <property name="title">
            <string>串口</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_16">
-           <item>
-            <widget class="QComboBox" name="comComboBox"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="searchForSeriealButton">
-             <property name="text">
-              <string>搜索</string>
-             </property>
-            </widget>
-           </item>
-           <item>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="1" column="2">
             <widget class="QPushButton" name="connectServiealButton">
              <property name="text">
               <string>连接</string>
              </property>
             </widget>
            </item>
-           <item>
+           <item row="1" column="0">
+            <widget class="QComboBox" name="comComboBox"/>
+           </item>
+           <item row="1" column="3">
             <spacer name="horizontalSpacer_10">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -971,6 +1008,13 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="searchForSeriealButton">
+             <property name="text">
+              <string>搜索端口</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1077,8 +1121,6 @@
   <tabstop>deleteRowButton</tabstop>
   <tabstop>clearTableButton</tabstop>
   <tabstop>exportPIDTableButton</tabstop>
-  <tabstop>selectedList</tabstop>
-  <tabstop>selectAllButton</tabstop>
   <tabstop>deleteSelected0Button</tabstop>
   <tabstop>add1SelectAllButton</tabstop>
   <tabstop>deleteSelectButton</tabstop>

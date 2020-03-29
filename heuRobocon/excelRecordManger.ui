@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
+    <width>450</width>
     <height>150</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>300</width>
+    <width>450</width>
     <height>150</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>300</width>
+    <width>450</width>
     <height>150</height>
    </size>
   </property>
@@ -29,62 +29,127 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="currentTimeLabel">
-       <property name="text">
-        <string>当前时间：</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="TimeTotalLabel">
-       <property name="text">
-        <string>00:00:00</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="pointTotalLabel">
-       <property name="text">
-        <string>总计记录数量</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="recordNumLabel">
-       <property name="text">
-        <string>0</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="dataID">
+        <widget class="QLabel" name="currentTimeLabel">
          <property name="text">
-          <string>数据id</string>
+          <string>当前时间：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="dataIDComboBox"/>
+        <widget class="QLabel" name="TimeTotalLabel">
+         <property name="text">
+          <string>00:00:00</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="dataNameLabel">
+        <widget class="QLabel" name="pointTotalLabel">
          <property name="text">
-          <string>数据命名</string>
+          <string>总计记录数量:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="dataNameEdit"/>
+        <widget class="QLabel" name="recordNumLabel">
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="0">
+      <widget class="QComboBox" name="dataIDComboBox"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="dataID">
+       <property name="text">
+        <string>数据id</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="dataNameLabel">
+       <property name="text">
+        <string>数据命名</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="dataNameEdit"/>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>导出统计数据</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QCheckBox" name="averageImportCheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>平均值</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="stdDevImportCheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>标准差</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="varianceImportcheckBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>方差</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

@@ -6,7 +6,6 @@ namespace HEURC_dataFormat {
 	#define myInt16  short
 	#define myUint8  unsigned char
 	#define myInt8   char
-
 	typedef struct {
 		myUint16 header;
 		myUint16 dataID;

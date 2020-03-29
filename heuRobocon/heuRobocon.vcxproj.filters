@@ -54,6 +54,9 @@
     <ClCompile Include="excelRecordManger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="myRecordInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="heuRobocon.ui">
@@ -107,6 +110,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="excelRecordManger.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="myRecordInfo.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
